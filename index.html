@@ -1,0 +1,41 @@
+<<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Rogue Fighter</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="">
+        <style>
+            html,
+            body{
+                padding: 0;
+                margin: 0;
+                height: 100%;
+            }
+            body {
+                display: flex;
+            }
+            body,
+            canvas {
+                background-color: black;
+            }
+            canvas {
+                width: 100%;
+                object-fit: contain;
+                image-rendering: crisp-edges;
+                image-rendering: pixelated;
+            }
+            img {
+                display: none;
+            }
+        </style>
+        <script type="module" src="./src/index.js"></script>
+    </head>
+    <body>
+        <canvas width="384" height="224"></canvas>
+        <img src="./images/ken.png" alt="ken">
+        <img src="./images/ryu.png" alt="ryu">
+        <img src="./images/background.png" alt="background">
+        <img src="./images/shadow.png" alt="shadow">
+    </body>
+</html>
