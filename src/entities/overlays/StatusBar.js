@@ -39,6 +39,46 @@ export class StatusBar {
 
             ['tag-ryu', [16, 56, 30, 9]],
             ['tag-ken', [128, 56, 30, 9]],
+
+            //Numeric
+            ['score-0', [17, 101, 10, 10]],
+            ['score-1', [29, 101, 10, 10]],
+            ['score-2', [41, 101, 10, 10]],
+            ['score-3', [53, 101, 10, 10]],
+            ['score-4', [65, 101, 11, 10]],
+            ['score-5', [77, 101, 10, 10]],
+            ['score-6', [89, 101, 10, 10]],
+            ['score-7', [101, 101, 10, 10]],
+            ['score-8', [113, 101, 10, 10]],
+            ['score-9', [125, 101, 10, 10]],
+            //Alpha
+            ['score-@', [17, 113, 10, 10]],
+            ['score-A', [29, 113, 11, 10]],
+            ['score-B', [41, 113, 10, 10]],
+            ['score-C', [53, 113, 10, 10]],
+            ['score-D', [65, 113, 10, 10]],
+            ['score-E', [77, 113, 10, 10]],
+            ['score-F', [89, 113, 10, 10]],
+            ['score-G', [101, 113, 10, 10]],
+            ['score-H', [113, 113, 10, 10]],
+            ['score-I', [125, 113, 9, 10]],
+            ['score-J', [136, 113, 10, 10]],
+            ['score-K', [149, 113, 10, 10]],
+            ['score-L', [161, 113, 10, 10]],
+            ['score-M', [173, 113, 10, 10]],
+            ['score-N', [185, 113, 11, 10]],
+            ['score-O', [197, 113, 10, 10]],
+            ['score-P', [17, 125, 10, 10]],
+            ['score-Q', [29, 125, 10, 10]],
+            ['score-R', [41, 125, 10, 10]],
+            ['score-S', [53, 125, 10, 10]],
+            ['score-T', [65, 125, 10, 10]],
+            ['score-U', [77, 125, 10, 10]],
+            ['score-V', [89, 125, 10, 10]],
+            ['score-W', [101, 125, 10, 10]],
+            ['score-X', [113, 125, 10, 10]],
+            ['score-Y', [125, 125, 10, 10]],
+            ['score-Z', [136, 125, 10, 10]],
         ]);
 
         const [{name: name1},{name: name2}] = this.fighters;
@@ -70,10 +110,38 @@ export class StatusBar {
         this.drawFrame(context, `${flashFrame}-${timeString.charAt(1)}`, 194, 33);
     }
 
+    drawScoreLabel(context, label, x) {
+        for(const index in label) {
+            this.drawFrame(context, `score-${label.charAt(index)}`, x + index*12, 1)
+        }
+    }
+
+    drawScore(context, score, x){
+        const strValue = String(score);
+        const buffer = ((6*12) - strValue.length * 12);
+        
+        for(let i = 0; i < strValue.length; i++){
+            this.drawFrame(context, `score-${strValue[i]}`, x + buffer + i * 12, 1);
+        }
+    }
+
+    drawScores(context){
+        this.drawScoreLabel(context, "P1", 4)
+        this.drawScore(context, 0, 45);
+
+        this.drawScoreLabel(context, "PB", 133);
+        this.drawScore(context, 0, 177);
+
+        this.drawScoreLabel(context, "P2", 269)
+        this.drawScore(context, 0, 309);
+        
+    }
+
     draw(context){
-        this.drawHealthBars(context);
-        this.drawTime(context);
+        this.drawScores(context);
         this.drawNameTags(context);
+        this.drawTime(context);
+        this.drawHealthBars(context);
     }
 
     updateTime(time){
