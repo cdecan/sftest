@@ -69,7 +69,7 @@ export class KenStage {
                 ['purple-jumper-3', [808, 120, 48, 32]],
             ],
             [['purple-jumper-1', 1992], ['purple-jumper-2', 166], ['purple-jumper-3', 166], ['purple-jumper-2', 166],
-            ['purple-jumper-1', 664], ['purple-jumper-2', 166], ['purple-jumper-3', 166], ['purple-jumper-2', 166]
+            ['purple-jumper-1', 664], ['purple-jumper-2', 166], ['purple-jumper-3', 166], ['purple-jumper-2', 166],
             ['purple-jumper-3', 166], ['purple-jumper-2', 166]],
             
         );
