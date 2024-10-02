@@ -76,16 +76,17 @@ export const isRight = (id) => isKeyDown(controls[id].keyboard[Control.RIGHT])
     controls[id].gamepad[GamepadThumbstick.HORIZONTAL_AXE_ID],
     controls[id].gamepad[GamepadThumbstick.DEAD_ZONE],
 );
+
 export const isUp = (id) => isKeyDown(controls[id].keyboard[Control.UP])
     || isButtonDown(id, controls[id].gamepad[Control.UP])
-    || isAxeGreater(id,
-    controls[id].gamepad[GamepadThumbstick.VERTICAL_AXE_ID_AXE_ID],
+    || isAxeLower(id,
+    controls[id].gamepad[GamepadThumbstick.VERTICAL_AXE_ID],
     -controls[id].gamepad[GamepadThumbstick.DEAD_ZONE],
     );
 export const isDown = (id) => isKeyDown(controls[id].keyboard[Control.DOWN])
     || isButtonDown(id, controls[id].gamepad[Control.DOWN])
-    || isAxeLower(id,
-    controls[id].gamepad[GamepadThumbstick.VERTICAL_AXE_ID_AXE_ID],
+    || isAxeGreater(id,
+    controls[id].gamepad[GamepadThumbstick.VERTICAL_AXE_ID],
     controls[id].gamepad[GamepadThumbstick.DEAD_ZONE],
     );
 

@@ -18,10 +18,10 @@ export const controls = [
             [GamepadThumbstick.HORIZONTAL_AXE_ID]: 0,
             [GamepadThumbstick.VERTICAL_AXE_ID]: 1,
 
-            [Control.UP]: 14,
-            [Control.DOWN]: 15,
-            [Control.LEFT]: 12,
-            [Control.RIGHT]: 13,
+            [Control.UP]: 12,
+            [Control.DOWN]: 13,
+            [Control.LEFT]: 14,
+            [Control.RIGHT]: 15,
         },
         keyboard: {
             [Control.UP]: 'KeyW',
@@ -36,10 +36,10 @@ export const controls = [
             [GamepadThumbstick.HORIZONTAL_AXE_ID]: 0,
             [GamepadThumbstick.VERTICAL_AXE_ID]: 1,
 
-            [Control.UP]: 14,
-            [Control.DOWN]: 15,
-            [Control.LEFT]: 12,
-            [Control.RIGHT]: 13,
+            [Control.UP]: 12,
+            [Control.DOWN]: 13,
+            [Control.LEFT]: 14,
+            [Control.RIGHT]: 15,
         },
         keyboard: {
             [Control.UP]: 'ArrowUp',
