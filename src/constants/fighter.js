@@ -32,3 +32,4 @@ export const FrameDelay = {
 };
 
 export const PUSH_FRICTION = 66;
+export const FIGHTER_START_DISTANCE = 88;
