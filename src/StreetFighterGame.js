@@ -16,6 +16,9 @@ export class StreetFighterGame {
             new Ryu(280,STAGE_FLOOR,FighterDirection.LEFT, 1),
         ]
 
+        this.fighters[0].opponent = this.fighters[1];
+        this.fighters[1].opponent = this.fighters[0];
+
         this.entities = [
             new Stage(),
             ...this.fighters.map(fighter => new Shadow(fighter)),
