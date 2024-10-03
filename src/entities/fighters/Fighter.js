@@ -1,36 +1,31 @@
-import { FIGHTER_START_DISTANCE, FighterAttackType, FighterDirection, FighterState, FrameDelay, PUSH_FRICTION} from "../../constants/fighter.js";
+import { FIGHTER_START_DISTANCE, FighterAttackStrength, FighterAttackType, FighterDirection, FighterState, FrameDelay, PUSH_FRICTION} from "../../constants/fighter.js";
 import { STAGE_FLOOR, STAGE_MID_POINT, STAGE_PADDING } from "../../constants/stage.js";
 import * as control from "../../engine/InputHandler.js";
 import { boxOverlap, getActualBoxDimensions, rectsOverlap } from "../../utils/collisions.js";
 import { FRAME_TIME } from "../../constants/game.js";
+import { DEBUG_drawDebug } from "../../utils/fighterDebug.js";
 
 export class Fighter {
-    constructor(name,playerId){
-        this.name = name;
-        this.playerId = playerId;
-        this.image = new Image();
-        this.frames = new Map();
-        this.position = {
-            x: STAGE_MID_POINT + STAGE_PADDING + (playerId === 0 ? -FIGHTER_START_DISTANCE : FIGHTER_START_DISTANCE),
-            y: STAGE_FLOOR
-        };
-        this.direction = playerId === 0 ? FighterDirection.RIGHT : FighterDirection.LEFT;
-        this.gravity = 0;
-        this.velocity = {x: 0, y: 0};
-        this.initialVelocity = {};
-        this.animationFrame = 0;
-        this.animationTimer = 0;
-        this.animations = {};
 
-        this.opponent;
+    image = new Image();
+        frames = new Map();
+        gravity = 0;
+        animationFrame = 0;
+        animationTimer = 0;
+        animations = {};
+        velocity = {x: 0, y: 0};
+        initialVelocity = {};
 
-        this.boxes = {
+        opponent = undefined;
+        attackStruck = false;
+
+        boxes = {
             push: {x:0,y:0,width:0,height:0},
             hurt: [[0,0,0,0],[0,0,0,0],[0,0,0,0]],
             hit: {x:0,y:0,width:0,height:0},
         };
         
-        this.states = {
+        states = {
             [FighterState.IDLE]: {
                 init: this.handleIdleInit.bind(this),
                 update: this.handleIdleState.bind(this),
@@ -130,6 +125,7 @@ export class Fighter {
             },
             [FighterState.LIGHT_ATTACK]: {
                 attackType: FighterAttackType.STAND,
+                attackStrength: FighterAttackStrength.LIGHT,
                 init: this.handleLightAttackInit.bind(this),
                 update: this.handleLightAttackState.bind(this),
                 validFrom: [
@@ -138,6 +134,7 @@ export class Fighter {
             },
             [FighterState.MEDIUM_ATTACK]: {
                 attackType: FighterAttackType.STAND,
+                attackStrength: FighterAttackStrength.MEDIUM,
                 init: this.handleMediumAttackInit.bind(this),
                 update: this.handleMediumAttackState.bind(this),
                 validFrom: [
@@ -146,6 +143,7 @@ export class Fighter {
             },
             [FighterState.HEAVY_ATTACK]: {
                 attackType: FighterAttackType.STAND,
+                attackStrength: FighterAttackStrength.HEAVY,
                 init: this.handleHeavyAttackInit.bind(this),
                 update: this.handleMediumAttackState.bind(this),
                 validFrom: [
@@ -153,6 +151,18 @@ export class Fighter {
                 ],
             },
         }
+
+
+    constructor(playerId, onAttackHit){
+        this.onAttackHit = onAttackHit;
+        this.playerId = playerId;
+        this.position = {
+            x: STAGE_MID_POINT + STAGE_PADDING + (playerId === 0 ? -FIGHTER_START_DISTANCE : FIGHTER_START_DISTANCE),
+            y: STAGE_FLOOR
+        };
+        
+        this.direction = playerId === 0 ? FighterDirection.RIGHT : FighterDirection.LEFT;
+        
         this.changeState(FighterState.IDLE);
     }
 
@@ -215,6 +225,7 @@ export class Fighter {
 
     handleIdleInit() {
         this.resetVelocities();
+        this.attackStruck = false;
     }
 
     handleIdleState() {
@@ -392,7 +403,10 @@ export class Fighter {
 
     handleLightAttackState(){
         if(this.animationFrame < 2) return;
-        if(control.isLightAttack(this.playerId)) this.animationFrame = 0;
+        if(control.isLightAttack(this.playerId)){
+            this.animationFrame = 0;
+            this.attackStruck = false;
+        }
         if(!this.isAnimationCompleted()) return;
         this.changeState(FighterState.IDLE);
     }
@@ -459,7 +473,7 @@ export class Fighter {
     }
 
     updateAttackBoxCollided(time){
-        if(!this.states[this.currentState].attackType) return;
+        if(!this.states[this.currentState].attackType || this.attackStruck) return;
 
         const actualHitBox = getActualBoxDimensions(this.position, this.direction, this.boxes.hit);
 
@@ -471,9 +485,20 @@ export class Fighter {
                 { x, y, width, height},
             );
             if(!boxOverlap(actualHitBox, actualOpponentHurtBox)) continue;
-            const hurtIndex = this.opponent.boxes.hurt.indexOf(hurt);
-            const hurtName = ['head', 'body', 'feet'];
-            console.log(`${this.name} has hit ${this.opponent.name}'s ${hurtName[hurtIndex]}`);
+
+            const strength = this.states[this.currentState].attackStrength;
+
+            const hitPos = {
+                x: (actualHitBox.x + (actualHitBox.width/2) + actualOpponentHurtBox.x + (actualOpponentHurtBox.width/2))/2,
+                y: (actualHitBox.y + (actualHitBox.height/2) + actualOpponentHurtBox.y + (actualOpponentHurtBox.height/2))/2,
+            }
+            hitPos.x -= 4 - Math.random() * 8;
+            hitPos.y -= 4 - Math.random() * 8;
+
+            this.onAttackHit(this.playerId, this.opponent.playerId, hitPos, strength);
+            
+            this.attackStruck = true;
+            return;
         }
     }
 
@@ -505,66 +530,7 @@ export class Fighter {
         );
         context.setTransform(1,0,0,1,0,0);
 
-        this.drawDebug(context, camera);
+        DEBUG_drawDebug(this, context, camera);
     }
 
-    drawDebugBox(context, camera, dimensions, baseColor){
-        if(!Array.isArray(dimensions)) return;
-
-        const [x=0, y=0, width=0, height=0] = dimensions;
-
-        context.beginPath();
-        context.strokeStyle = baseColor + 'AA';
-        context.fillStyle = baseColor + '44';
-        context.fillRect(
-            Math.floor(this.position.x + (x * this.direction) - camera.position.x) + 0.5,
-            Math.floor(this.position.y + y - camera.position.y) + 0.5,
-            width * this.direction,
-            height
-        );
-        context.rect(
-            Math.floor(this.position.x + (x * this.direction) - camera.position.x) + 0.5,
-            Math.floor(this.position.y + y - camera.position.y) + 0.5,
-            width * this.direction,
-            height
-        )
-        context.stroke();
-    }
-
-    drawDebug(context, camera){
-
-        const [frameKey] = this.animations[this.currentState][this.animationFrame];
-        const boxes = this.getBoxes(frameKey);
-
-        //Push Box
-        this.drawDebugBox(context, camera, Object.values(boxes.push), '#55FF55');
-        //Hurt Boxes
-        for (const hurtBox of boxes.hurt){
-            this.drawDebugBox(context, camera, hurtBox, '#7777FF')
-        }
-        //Hit Box
-        this.drawDebugBox(context, camera, Object.values(boxes.hit), '#FF0000');
-
-        //Origin
-        context.lineWidth = 1;
-        context.beginPath();
-        context.strokeStyle = 'white';
-        context.moveTo(
-            Math.floor(this.position.x - camera.position.x) - 4,
-            Math.floor(this.position.y - camera.position.y)-0.5
-        );
-        context.lineTo(
-            Math.floor(this.position.x - camera.position.x) + 5,
-            Math.floor(this.position.y - camera.position.y)-0.5
-        );
-        context.moveTo(
-            Math.floor(this.position.x - camera.position.x) + 0.5,
-            Math.floor(this.position.y - camera.position.y) - 5
-        );
-        context.lineTo(
-            Math.floor(this.position.x - camera.position.x) + 0.5,
-            Math.floor(this.position.y - camera.position.y) + 4
-        );
-        context.stroke();
-    }
 }

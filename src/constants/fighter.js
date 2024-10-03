@@ -50,3 +50,29 @@ export const FrameDelay = {
 
 export const PUSH_FRICTION = 66;
 export const FIGHTER_START_DISTANCE = 88;
+
+export const FighterId = {
+    Ryu: 'Ryu',
+    Ken: 'Ken',
+};
+
+export const FighterAttackStrength = {
+    LIGHT: 'light',
+    MEDIUM: 'medium',
+    HEAVY: 'heavy',
+};
+
+export const FighterAttackBaseData = {
+    [FighterAttackStrength.LIGHT]: {
+        //score:
+        damage: 12,
+    },
+    [FighterAttackStrength.MEDIUM]: {
+        //score:
+        damage: 20,
+    },
+    [FighterAttackStrength.HEAVY]: {
+        //score:
+        damage: 28,
+    },
+};

@@ -2,14 +2,14 @@ import { FighterState, FrameDelay, HurtBox, PushBox } from '../../constants/figh
 import { Fighter } from './Fighter.js';
 
 export class Ryu extends Fighter{
-    constructor(playerId){
-        super('Ryu',playerId);
+    constructor(playerId, onAttackHit){
+        super(playerId, onAttackHit);
         this.image = document.querySelector('img[alt=ryu]');
 
         // this.frame = [7,14,59,90];
 
         this.frames = new Map([
-            //NAME | X,Y,W,H | idk | PUSHBOX | Head/Body/feet hitbox
+            //NAME | X,Y,W,H | origin | PUSHBOX | Head/Body/feet
             //Idle
             ['idle-1',  [[[75,14,60,89], [34,86]], PushBox.IDLE, HurtBox.IDLE]],
             ['idle-2',  [[[7,14,59,90], [33,87]], PushBox.IDLE, HurtBox.IDLE]],
