@@ -1,4 +1,4 @@
-import { GamepadThumbstick, Control } from "../constants/control";
+import { GamepadThumbstick, Control } from "../constants/control.js";
 
 export const controls = [
     {
