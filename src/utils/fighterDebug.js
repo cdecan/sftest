@@ -52,7 +52,7 @@ export function DEBUG_drawDebug(fighter, context, camera){
     //Push Box
     drawDebugBox(context, camera, position, direction, Object.values(boxes.push), '#55FF55');
     //Hurt Boxes
-    for (const hurtBox of boxes.hurt){
+    for (const hurtBox of Object.values(boxes.hurt)){
         drawDebugBox(context, camera, position, direction, hurtBox, '#7777FF')
     }
     //Hit Box

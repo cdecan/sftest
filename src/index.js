@@ -2,5 +2,8 @@ import { StreetFighterGame } from "./StreetFighterGame.js";
 
 
 window.addEventListener('load', function() {
-    new StreetFighterGame().start();
+    window.addEventListener('click', function(){
+        new StreetFighterGame().start();
+    }, {once: true});
+    
 });

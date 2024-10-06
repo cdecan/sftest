@@ -1,111 +1,114 @@
 import { FRAME_TIME } from "../../constants/game.js";
 import { STAGE_MID_POINT, STAGE_PADDING } from "../../constants/stage.js";
+import { playSound } from "../../engine/soundHandler.js";
 import { drawFrame } from "../../utils/context.js";
 import { BackgroundAnimation } from "./shared/BackgroundAnimation.js";
 import { SkewedFloor } from "./shared/SkewedFloor.js";
 
 export class KenStage {
-    constructor(){
-        this.image = document.querySelector('img[alt=stage]');
-        this.floor = new SkewedFloor(this.image, [8, 392, 896, 56]);
+    image = document.querySelector('img[alt=stage]');
+    music = document.querySelector('audio#theme-ken');
+    floor = new SkewedFloor(this.image, [8, 392, 896, 56]);
 
-        this.frames = new Map([
-            ['stage-background', [72, 208, 768, 176]],
-            ['stage-boat', [8, 16, 521, 180]],
-            ['stage-floor-bottom', [8, 448, 896, 16]],
+    frames = new Map([
+        ['stage-background', [72, 208, 768, 176]],
+        ['stage-boat', [8, 16, 521, 180]],
+        ['stage-floor-bottom', [8, 448, 896, 16]],
 
-            //Grey Suit Man
-            ['grey-suit-1', [600, 24, 16, 24]],
-            ['grey-suit-2', [600, 88, 16, 24]],
+        //Grey Suit Man
+        ['grey-suit-1', [600, 24, 16, 24]],
+        ['grey-suit-2', [600, 88, 16, 24]],
 
-            //Bollards
-            ['bollard-small', [800, 184, 21, 16]],
-            ['bollard-large', [760, 176, 31, 24]],
+        //Bollards
+        ['bollard-small', [800, 184, 21, 16]],
+        ['bollard-large', [760, 176, 31, 24]],
 
-            ['barrels', [560, 472, 151, 96]],
-        ]);
+        ['barrels', [560, 472, 151, 96]],
+    ]);
 
-        this.baldMan = new BackgroundAnimation(
-            this.image,
-            [
-                ['bald-man-1', [552, 8, 40, 64]],
-                ['bald-man-2', [552, 72, 40, 64]],
-                ['bald-man-3', [552, 136, 40, 64]],
-            ],
-            [['bald-man-1', 100], ['bald-man-2', 133], ['bald-man-3', 664], ['bald-man-2', 133]],
-        );
-        this.cheeringWoman = new BackgroundAnimation(
-            this.image,
-            [
-                ['woman-1', [624, 16, 32, 56]],
-                ['woman-2', [624, 80, 32, 56]],
-                ['woman-3', [624, 144, 32, 56]],
-            ],
-            [['woman-1', 216], ['woman-2', 216], ['woman-3', 216], ['woman-2', 216]],
-        );
-        this.greenJumperGuy = new BackgroundAnimation(
-            this.image,
-            [
-                ['green-jumper-1', [664, 16, 32, 56]],
-                ['green-jumper-2', [664, 80, 32, 56]],
-            ],
-            [['green-jumper-1', 216], ['green-jumper-2', 216], ['green-jumper-1', 216], ['green-jumper-2', 216]],
-        );
-        this.blueCoatGuy = new BackgroundAnimation(
-            this.image,
-            [
-                ['blue-coat-1', [704, 16, 48, 56]],
-                ['blue-coat-2', [704, 80, 48, 56]],
-                ['blue-coat-3', [704, 144, 48, 56]],
-            ],
-            [['blue-coat-1', 996], ['blue-coat-2', 133], ['blue-coat-3', 100], ['blue-coat-2', 133],
-            ['blue-coat-1', 249], ['blue-coat-2', 133], ['blue-coat-3', 100], ['blue-coat-2', 133]],
-        );
-        this.purpleJumperGuy = new BackgroundAnimation(
-            this.image,
-            [
-                ['purple-jumper-1', [808, 24, 48, 32]],
-                ['purple-jumper-2', [808, 72, 48, 32]],
-                ['purple-jumper-3', [808, 120, 48, 32]],
-            ],
-            [['purple-jumper-1', 1992], ['purple-jumper-2', 166], ['purple-jumper-3', 166], ['purple-jumper-2', 166],
-            ['purple-jumper-1', 664], ['purple-jumper-2', 166], ['purple-jumper-3', 166], ['purple-jumper-2', 166],
-            ['purple-jumper-3', 166], ['purple-jumper-2', 166]],
-            
-        );
-        this.brownSuitGuy = new BackgroundAnimation(
-            this.image,
-            [
-                ['brown-suit-1', [760, 16, 40, 40]],
-                ['brown-suit-2', [760, 64, 40, 40]],
-                ['brown-suit-3', [760, 112, 40, 40]],
-            ],
-            [['brown-suit-1', 133], ['brown-suit-2', 133], ['brown-suit-3', 133], ['brown-suit-2', 133]],
-        );
-
-        this.flag = new BackgroundAnimation(
-            this.image,
-            [
-                ['flag-1', [848, 312, 40, 32]],
-                ['flag-2', [848, 264, 40, 32]],
-                ['flag-3', [848, 216, 40, 32]],
-            ],
-            [['flag-1', 133], ['flag-2', 133], ['flag-3', 133]],
-        )
+    baldMan = new BackgroundAnimation(
+        this.image,
+        [
+            ['bald-man-1', [552, 8, 40, 64]],
+            ['bald-man-2', [552, 72, 40, 64]],
+            ['bald-man-3', [552, 136, 40, 64]],
+        ],
+        [['bald-man-1', 100], ['bald-man-2', 133], ['bald-man-3', 664], ['bald-man-2', 133]],
+    );
+    cheeringWoman = new BackgroundAnimation(
+        this.image,
+        [
+            ['woman-1', [624, 16, 32, 56]],
+            ['woman-2', [624, 80, 32, 56]],
+            ['woman-3', [624, 144, 32, 56]],
+        ],
+        [['woman-1', 216], ['woman-2', 216], ['woman-3', 216], ['woman-2', 216]],
+    );
+    greenJumperGuy = new BackgroundAnimation(
+        this.image,
+        [
+            ['green-jumper-1', [664, 16, 32, 56]],
+            ['green-jumper-2', [664, 80, 32, 56]],
+        ],
+        [['green-jumper-1', 216], ['green-jumper-2', 216], ['green-jumper-1', 216], ['green-jumper-2', 216]],
+    );
+    blueCoatGuy = new BackgroundAnimation(
+        this.image,
+        [
+            ['blue-coat-1', [704, 16, 48, 56]],
+            ['blue-coat-2', [704, 80, 48, 56]],
+            ['blue-coat-3', [704, 144, 48, 56]],
+        ],
+        [['blue-coat-1', 996], ['blue-coat-2', 133], ['blue-coat-3', 100], ['blue-coat-2', 133],
+        ['blue-coat-1', 249], ['blue-coat-2', 133], ['blue-coat-3', 100], ['blue-coat-2', 133]],
+    );
+    purpleJumperGuy = new BackgroundAnimation(
+        this.image,
+        [
+            ['purple-jumper-1', [808, 24, 48, 32]],
+            ['purple-jumper-2', [808, 72, 48, 32]],
+            ['purple-jumper-3', [808, 120, 48, 32]],
+        ],
+        [['purple-jumper-1', 1992], ['purple-jumper-2', 166], ['purple-jumper-3', 166], ['purple-jumper-2', 166],
+        ['purple-jumper-1', 664], ['purple-jumper-2', 166], ['purple-jumper-3', 166], ['purple-jumper-2', 166],
+        ['purple-jumper-3', 166], ['purple-jumper-2', 166]],
         
-        this.greySuitMan = {
-            animationFrame: 0,
-            animationTimer: 0,
-            animationDelay: 0,
-        }
+    );
+    brownSuitGuy = new BackgroundAnimation(
+        this.image,
+        [
+            ['brown-suit-1', [760, 16, 40, 40]],
+            ['brown-suit-2', [760, 64, 40, 40]],
+            ['brown-suit-3', [760, 112, 40, 40]],
+        ],
+        [['brown-suit-1', 133], ['brown-suit-2', 133], ['brown-suit-3', 133], ['brown-suit-2', 133]],
+    );
 
-        this.boat = {
-            position: {x:0,y:0},
-            animationFrame: 0,
-            animationTimer: 0,
-            animationDelay: 22,
-            animation: [0, -1, -2, -3, -4, -3, -2, -1],
-        };
+    flag = new BackgroundAnimation(
+        this.image,
+        [
+            ['flag-1', [848, 312, 40, 32]],
+            ['flag-2', [848, 264, 40, 32]],
+            ['flag-3', [848, 216, 40, 32]],
+        ],
+        [['flag-1', 133], ['flag-2', 133], ['flag-3', 133]],
+    )
+    
+    greySuitMan = {
+        animationFrame: 0,
+        animationTimer: 0,
+        animationDelay: 0,
+    }
+
+    boat = {
+        position: {x:0,y:0},
+        animationFrame: 0,
+        animationTimer: 0,
+        animationDelay: 22,
+        animation: [0, -1, -2, -3, -4, -3, -2, -1],
+    };
+    constructor(){
+        playSound(this.music, 0.2);
     }
 
     drawFrame(context, frameKey, x, y){

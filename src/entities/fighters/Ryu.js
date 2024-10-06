@@ -1,4 +1,4 @@
-import { FighterState, FrameDelay, HurtBox, PushBox } from '../../constants/fighter.js';
+import { FighterState, FrameDelay, HurtBox, PushBox, FIGHTER_HURT_DELAY } from '../../constants/fighter.js';
 import { Fighter } from './Fighter.js';
 
 export class Ryu extends Fighter{
@@ -83,6 +83,26 @@ export class Ryu extends Fighter{
             ['heavy-attack-4', [[[306,1208,101,77],[39,74]], PushBox.IDLE, [[-41, -78, 20, 20],[-25, -78, 42, 42],[-11, -50, 42, 50]]]],
             ['heavy-attack-5', [[[418,1204,64,81],[38,78]], PushBox.IDLE, [[-41, -78, 20, 20],[-25, -78, 42, 42],[-11, -50, 42, 50]]]],
 
+            //Hit Face
+            ['hit-face-1', [[[167, 2043, 263-167, 2134-2043], [41, 87]], PushBox.IDLE, [[-25, -89, 20, 20], [-33, -74, 40, 46], [-30, -37, 40, 38]]]],
+            ['hit-face-2', [[[237, 2153, 305-237, 2241-2153], [47, 86]], PushBox.IDLE, [[-42, -88, 20, 20], [-46, -74, 40, 46], [-33, -37, 40, 38]]]],
+            ['hit-face-3', [[[314, 2152, 385-314, 2239-2152], [53, 85]], PushBox.IDLE, [[-52, -87, 20, 20], [-53, -71, 40, 46], [-33, -37, 40, 38]]]],
+            ['hit-face-4', [[[314, 2152, 385-313, 2239-2152], [56, 90]], PushBox.IDLE, [[-57, -88, 20, 20], [-53, -71, 40, 46], [-33, -37, 40, 38]]]],
+
+            //Hit Stomach
+            ['hit-stomach-1', [[[396, 2156, 455-396, 2241-2156], [37, 83]], PushBox.IDLE, [[-15, -85, 28, 18], [-31, -69, 42, 42], [-30, -34, 42, 34]]]],
+            ['hit-stomach-2', [[[469, 2159, 535-469, 2241-2159], [41, 80]], PushBox.IDLE, [[-17, 82, 28, 18], [-33, -65, 38, 36], [-34, -34, 42, 34]]]],
+            ['hit-stomach-3', [[[542, 2166, 612-542, 2245-2166], [40, 81]], PushBox.IDLE, [[-17, 82, 28, 18], [-41, -59, 38, 30], [-34, -34, 42, 34]]]],
+            ['hit-stomach-4', [[[635, 2163, 718-635, 2240-2163], [50, 69]], PushBox.IDLE, [[-28, -67, 28, 18], [-41, -59, 38, 30], [-40, -34, 42, 34]]]],
+
+            //Stunned
+            ['stun-1', [[[947, 1926, 77, 87], [28, 85]], PushBox.IDLE, [[8, -87, 28, 18], [-16, -75, 40, 46], [-26, -31, 40, 32]]]],
+            ['stun-2', [[[1034, 1924, 65, 89], [28, 87]], PushBox.IDLE, [[-9, -89, 28, 18], [-23, -75, 40, 46], [-26, -31, 40, 32]]]],
+            ['stun-3', [[[1108, 1923, 67, 90], [35, 88]], PushBox.IDLE, [[-22, -91, 28, 18], [-30, -72, 42, 40], [-26, -31, 40, 32]]]],
+
+
+
+
             //OLD ATTACKS - HEAVY PUNCH:
             // ['heavy-attack-1', [[[175,465,108,94],[24,92]], PushBox.IDLE]],
         ]);
@@ -152,6 +172,31 @@ export class Ryu extends Fighter{
                 ['heavy-attack-1', 2], ['heavy-attack-2', 4], ['heavy-attack-3', 8], 
                 ['heavy-attack-4', 10], ['heavy-attack-5', 7],
                 ['heavy-attack-5', FrameDelay.TRANSITION],
+            ],
+            [FighterState.HURT_HEAD_LIGHT]: [
+                ['hit-face-1', FIGHTER_HURT_DELAY], ['hit-face-1', 3],
+                ['hit-face-2', 8], ['hit-face-2', FrameDelay.TRANSITION],
+            ],
+            [FighterState.HURT_HEAD_MEDIUM]: [
+                ['hit-face-1', FIGHTER_HURT_DELAY], ['hit-face-1', 3],
+                ['hit-face-2', 4], ['hit-face-3', 9], ['hit-face-3', FrameDelay.TRANSITION],
+            ],
+            [FighterState.HURT_HEAD_HEAVY]: [
+                ['hit-face-3', FIGHTER_HURT_DELAY], ['hit-face-3', 7],
+                ['hit-face-4', 4], ['hit-face-3', 9], ['hit-face-3', FrameDelay.TRANSITION],
+            ],
+            [FighterState.HURT_BODY_LIGHT]: [
+                ['hit-stomach-1', FIGHTER_HURT_DELAY], ['hit-stomach-1', 11],
+                ['hit-stomach-1', FrameDelay.TRANSITION],
+            ],
+            [FighterState.HURT_BODY_MEDIUM]: [
+                ['hit-stomach-1', FIGHTER_HURT_DELAY], ['hit-stomach-1', 7],
+                ['hit-stomach-2', 9], ['hit-stomach-2', FrameDelay.TRANSITION],
+            ],
+            [FighterState.HURT_BODY_HEAVY]: [
+                ['hit-stomach-2', FIGHTER_HURT_DELAY], ['hit-stomach-2', 3],
+                ['hit-stomach-3', 4], ['hit-stomach-4', 4],
+                ['stun-3', 9], ['stun-3', FrameDelay.TRANSITION],
             ],
 
             //OLD ATTACK -  HEAVY PUNCH

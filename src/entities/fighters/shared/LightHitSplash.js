@@ -23,6 +23,5 @@ export class LighHitSplash extends HitSplash{
     }
     draw(context, camera){
         super.draw(context, camera);
-        console.log(this.frames);
     }
 }
