@@ -7,7 +7,7 @@ export class Camera {
 
     }
 
-    update(time, context){
+    update(_, context){
         this.position.y = -6 + Math.floor(Math.min(this.fighters[1].position.y, this.fighters[0].position.y)/10);
 
         const lowX = Math.min(this.fighters[1].position.x, this.fighters[0].position.x);
@@ -18,16 +18,15 @@ export class Camera {
             this.position.x = lowX + midPoint - (context.canvas.width / 2);
         } else {
             for(const fighter of this.fighters) {
-                if(fighter.position.x < this.position.x + SCROLL_BOUNDARY
-                    && fighter.velocity.x * fighter.direction < 0
-                    || fighter.position.x > this.position.x + context.canvas.width - SCROLL_BOUNDARY
-                    && fighter.velocity.x * fighter.direction > 0
-                ){
-                    this.position.x += fighter.velocity.x * fighter.direction * time.delta;
+                if(fighter.position.x < this.position.x + SCROLL_BOUNDARY){
+                    this.position.x = fighter.position.x - SCROLL_BOUNDARY;
+                } else if(fighter.position.x > this.position.x + context.canvas.width - SCROLL_BOUNDARY){
+                    this.position.x = fighter.position.x - context.canvas.width + SCROLL_BOUNDARY;
                 }
             }
         }
 
+        //MAX LIMITS
         if(this.position.x < STAGE_PADDING) this.position.x = STAGE_PADDING;
         if(this.position.x > STAGE_WIDTH + STAGE_PADDING - context.canvas.width){
             this.position.x = STAGE_PADDING + STAGE_WIDTH - context.canvas.width;

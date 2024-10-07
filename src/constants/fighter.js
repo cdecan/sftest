@@ -36,6 +36,9 @@ export const FighterState = {
     HURT_BODY_LIGHT: 'hurt-body-light',
     HURT_BODY_MEDIUM: 'hurt-body-medium',
     HURT_BODY_HEAVY: 'hurt-body-heavy',
+    SPECIAL_1: 'special-1',
+    SPECIAL_2: 'special-2',
+    SPECIAL_3: 'special-3',
 };
 
 export const PushBox = {
@@ -110,4 +113,5 @@ export const hurtStateValidFrom = [
     FighterState.LIGHT_ATTACK, FighterState.MEDIUM_ATTACK, FighterState.HEAVY_ATTACK,
     FighterState.HURT_HEAD_LIGHT, FighterState.HURT_HEAD_MEDIUM, FighterState.HURT_HEAD_HEAVY,
     FighterState.HURT_BODY_LIGHT, FighterState.HURT_BODY_MEDIUM, FighterState.HURT_BODY_HEAVY,
+    FighterState.SPECIAL_1, FighterState.SPECIAL_2, FighterState.SPECIAL_3,
 ];
