@@ -1,4 +1,4 @@
-import { FighterState, FrameDelay, HurtBox, PushBox, FIGHTER_HURT_DELAY } from '../../constants/fighter.js';
+import { FighterState, FrameDelay, HurtBox, PushBox, FIGHTER_HURT_DELAY, SpecialMoveDirection, SpecialMoveButton } from '../../constants/fighter.js';
 import { playSound } from '../../engine/soundHandler.js';
 import { Fighter } from './Fighter.js';
 import { Fireball } from './special/Fireball.js';
@@ -226,15 +226,26 @@ export class Ryu extends Fighter{
         jump: -420,
     };
 
+    specialMoves = [
+        {
+            state: FighterState.SPECIAL_1,
+            sequence: [
+                SpecialMoveDirection.DOWN, SpecialMoveDirection.FORWARD_DOWN, SpecialMoveDirection.FORWARD,
+                SpecialMoveButton.ANY
+            ],
+            cursor: 0,
+        }
+    ];
+
     gravity = 1000;
 
     fireballFired = false;
 
 
-    constructor(playerId, onAttackHit, addEntity){
+    constructor(playerId, onAttackHit, entityList){
         super(playerId, onAttackHit);
 
-        this.addEntity = addEntity;
+        this.entityList = entityList;
         
         this.states[FighterState.SPECIAL_1] = {
             init: this.handleHadoukenInit.bind(this),
@@ -246,10 +257,10 @@ export class Ryu extends Fighter{
                 FighterState.CROUCH_TURN, 
             ]
         }
-        this.states[FighterState.IDLE].validFrom = [...this.states[FighterState.IDLE].validFrom, FighterState.SPECIAL_1];
+        this.states[FighterState.IDLE].validFrom.push(FighterState.SPECIAL_1);
     }
 
-    handleHadoukenInit(){
+    handleHadoukenInit(_, __){
         this.resetVelocities();
         playSound(this.voiceHadouken, 0.3);
         this.fireballFired = false;
@@ -257,7 +268,7 @@ export class Ryu extends Fighter{
     handleHadoukenState(time){
         if(!this.fireballFired && this.animationFrame === 3){
             this.fireballFired = true;
-            this.addEntity(Fireball, this, time);
+            this.entityList.add.call(this.entityList, Fireball, time, this);
         }
 
         if(!this.isAnimationCompleted()) return;

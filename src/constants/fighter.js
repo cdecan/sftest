@@ -80,6 +80,11 @@ export const FighterAttackStrength = {
     HEAVY: 'heavy',
 };
 
+export const FighterHurtBy = {
+    FIGHTER: 'fighter',
+    FIREBALL: 'fireball',
+};
+
 export const FighterAttackBaseData = {
     [FighterAttackStrength.LIGHT]: {
         //score:
@@ -115,3 +120,20 @@ export const hurtStateValidFrom = [
     FighterState.HURT_BODY_LIGHT, FighterState.HURT_BODY_MEDIUM, FighterState.HURT_BODY_HEAVY,
     FighterState.SPECIAL_1, FighterState.SPECIAL_2, FighterState.SPECIAL_3,
 ];
+
+export const SpecialMoveDirection = {
+    BACKWARD: 'backward',
+    BACKWARD_UP: 'backward-up',
+    UP: 'up',
+    FORWARD_UP: 'forward-up',
+    FORWARD: 'forward',
+    FORWARD_DOWN: 'forward-down',
+    DOWN: 'down',
+    BACKWARD_DOWN: 'backward-down',
+    NONE: 'none',
+}
+
+export const SpecialMoveButton = {
+    ANY: 'any',
+
+};

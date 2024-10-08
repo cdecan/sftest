@@ -1,10 +1,11 @@
-import { FIGHTER_HURT_DELAY, FIGHTER_START_DISTANCE, FighterAttackBaseData, FighterAttackStrength, FighterAttackType, FighterDirection, FighterHurtBox, FighterState, FrameDelay, PUSH_FRICTION, hurtStateValidFrom} from "../../constants/fighter.js";
+import { FIGHTER_HURT_DELAY, FIGHTER_START_DISTANCE, FighterAttackBaseData, FighterAttackStrength, FighterAttackType, FighterDirection, FighterHurtBox, FighterHurtBy, FighterState, FrameDelay, PUSH_FRICTION, hurtStateValidFrom} from "../../constants/fighter.js";
 import { STAGE_FLOOR, STAGE_MID_POINT, STAGE_PADDING } from "../../constants/stage.js";
 import * as control from "../../engine/InputHandler.js";
 import { boxOverlap, getActualBoxDimensions, rectsOverlap } from "../../utils/collisions.js";
-import { FRAME_TIME } from "../../constants/game.js";
+import { FRAME_TIME, SCREEN_WIDTH } from "../../constants/game.js";
 import { DEBUG_drawDebug } from "../../utils/fighterDebug.js";
 import { playSound, stopSound } from "../../engine/soundHandler.js";
+import { hasSpecialMoveBeenExecuted } from "../../engine/controlHistory.js";
 
 export class Fighter {
     image = new Image();
@@ -17,6 +18,7 @@ export class Fighter {
     currentState = FighterState.IDLE;
     opponent = undefined;
 
+    hurtBy = undefined;
     hurtShake = 0;
     hurtShakeTimer = 0;
     slideVelocity = 0;
@@ -222,7 +224,7 @@ export class Fighter {
         this.direction = playerId === 0 ? FighterDirection.RIGHT : FighterDirection.LEFT;
     }
 
-    changeState(newState, time){
+    changeState(newState, time, args){
         if(!this.states[newState].validFrom.includes(this.currentState)){
                 console.warn(`Illegal transition from "${this.currentState}" to "${newState}"`)        
                 return;
@@ -230,7 +232,7 @@ export class Fighter {
 
         this.currentState = newState;
         this.setAnimationFrame(0, time);
-        this.states[this.currentState].init(time);
+        this.states[this.currentState].init(time, args);
     } 
 
     resetVelocities(){
@@ -238,7 +240,7 @@ export class Fighter {
     }
 
     resetSlide(transfer=false){
-        if(transfer){
+        if(transfer && this.hurtBy === FighterHurtBy.FIGHTER){
             this.opponent.slideFriction = this.slideFriction;
             this.opponent.slideVelocity = this.slideVelocity;
         }
@@ -307,8 +309,7 @@ export class Fighter {
         else if(control.isForward(this.playerId, this.direction)){
             this.changeState(FighterState.WALK_FORWARD, time);
         }else if(control.isLightAttack(this.playerId)){
-            this.changeState(FighterState.SPECIAL_1, time);
-            //this.changeState(FighterState.LIGHT_ATTACK);
+            this.changeState(FighterState.LIGHT_ATTACK, time);
         }else if(control.isMediumAttack(this.playerId)){
             this.changeState(FighterState.MEDIUM_ATTACK, time);
         }else if(control.isHeavyAttack(this.playerId)){
@@ -470,7 +471,7 @@ export class Fighter {
         playSound(this.soundAttacks[this.states[this.currentState].attackStrength]);
     }
 
-    handleLightAttackReset(){
+    handleLightAttackReset(time){
         stopSound(this.soundAttacks[this.states[this.currentState].attackStrength]);
         playSound(this.soundAttacks[this.states[this.currentState].attackStrength]);
         this.setAnimationFrame(0, time);
@@ -479,7 +480,7 @@ export class Fighter {
 
     handleLightAttackState(time){
         if(this.animationFrame < 2) return;
-        if(control.isLightAttack(this.playerId))this.handleLightAttackReset();
+        if(control.isLightAttack(this.playerId))this.handleLightAttackReset(time);
         if(!this.isAnimationCompleted()) return;
         this.changeState(FighterState.IDLE, time);
     }
@@ -499,15 +500,21 @@ export class Fighter {
         if(!this.isAnimationCompleted()) return;
         this.hurtShake = 0;
         this.hurtShakeTimer = 0;
+        this.hurtBy = undefined;
         this.changeState(FighterState.IDLE, time);
     }
 
-    handleAttackHit(attackStrength, hitLocation, time){
+    handleAttackHit(attackStrength, attackType, hitPosition, hitLocation, hurtBy, time){
         const newState = this.getHitState(attackStrength, hitLocation);
         const {velocity, friction} = FighterAttackBaseData[attackStrength].slide;
 
+        this.hurtBy = hurtBy;
         this.slideVelocity = velocity;
         this.slideFriction = friction;
+        this.attackStruck = true;
+        
+        playSound(this.soundHits[attackStrength]);
+        this.onAttackHit(time, this.opponent.playerId, this.playerId, hitPosition, attackStrength);
         this.changeState(newState, time);
     }
 
@@ -526,8 +533,8 @@ export class Fighter {
     }
 
     updateStageConstraints(time, context, camera) {
-        if(this.position.x > camera.position.x + context.canvas.width - this.boxes.push.width){
-            this.position.x = camera.position.x + context.canvas.width - this.boxes.push.width;
+        if(this.position.x > camera.position.x + SCREEN_WIDTH - this.boxes.push.width){
+            this.position.x = camera.position.x + SCREEN_WIDTH - this.boxes.push.width;
             this.resetSlide(true);
         }
         if(this.position.x < camera.position.x + this.boxes.push.width){
@@ -554,7 +561,7 @@ export class Fighter {
                 this.position.x = Math.min(
                     (this.opponent.position.x + this.opponent.boxes.push.x + this.opponent.boxes.push.width)
                     + (this.boxes.push.x + this.boxes.push.width),
-                    camera.position.x + context.canvas.width - this.boxes.push.width
+                    camera.position.x + SCREEN_WIDTH - this.boxes.push.width
                 );
 
                 if ([
@@ -587,7 +594,8 @@ export class Fighter {
     }
 
     updateAttackBoxCollided(time){
-        if(!this.states[this.currentState].attackType || this.attackStruck) return;
+        const attackType = this.states[this.currentState].attackType
+        if(!attackType || this.attackStruck) return;
 
         const actualHitBox = getActualBoxDimensions(this.position, this.direction, this.boxes.hit);
 
@@ -603,22 +611,20 @@ export class Fighter {
             const attackStrength = this.states[this.currentState].attackStrength;
 
             stopSound(this.soundHits[attackStrength]);
-            playSound(this.soundHits[attackStrength]);
-
+            
             const strength = this.states[this.currentState].attackStrength;
             
-
+            
             const hitPos = {
                 x: (actualHitBox.x + (actualHitBox.width/2) + actualOpponentHurtBox.x + (actualOpponentHurtBox.width/2))/2,
                 y: (actualHitBox.y + (actualHitBox.height/2) + actualOpponentHurtBox.y + (actualOpponentHurtBox.height/2))/2,
             }
             hitPos.x -= 4 - Math.random() * 8;
             hitPos.y -= 4 - Math.random() * 8;
-
-            this.onAttackHit(time, this.playerId, this.opponent.playerId, hitPos, strength);
-            this.opponent.handleAttackHit(attackStrength, hurtLocation);
             
-            this.attackStruck = true;
+            
+            this.opponent.handleAttackHit(attackStrength, attackType, hitPos, hurtLocation, FighterHurtBy.FIGHTER, time);
+            
             return;
         }
     }
@@ -646,13 +652,22 @@ export class Fighter {
         this.position.y += this.velocity.y * time.delta;
     }
 
+    updateSpecialMoves(time){
+        for (const specialMove of this.specialMoves) {
+            const resultArgs = hasSpecialMoveBeenExecuted(specialMove, this.playerId, time);
+
+            if(resultArgs) this.changeState(specialMove.state, time, resultArgs);
+        }
+    }
+
     update(time, context, camera){
         this.updatePosition(time);
-        this.states[this.currentState].update(time,);
+        this.states[this.currentState].update(time);
         this.updateSlide(time);
         this.updateAnimation(time);
         this.updateStageConstraints(time, context, camera);
         this.updateAttackBoxCollided(time);
+        this.updateSpecialMoves(time);
     }
 
     draw(context, camera){

@@ -1,8 +1,8 @@
 import { HitSplash } from "./HitSplash.js";
 
 export class MediumHitSplash extends HitSplash{
-    constructor(x, y, playerId, onEnd){
-        super(x, y, playerId, onEnd);
+    constructor(args, time, entityList){
+        super(args, time, entityList);
 
         this.frames = [
             //P1

@@ -1,3 +1,5 @@
+import { SCREEN_HEIGHT, SCREEN_WIDTH } from "../constants/game.js";
+
 export function drawFrame(context, image, dimensions, x, y, direction=1){
     const [sourceX, sourceY, sourceWidth, sourceHeight] = dimensions;
 
@@ -15,5 +17,7 @@ export function getContext(){
     const context = canvasEL.getContext('2d');
 
     context.imageSmoothingEnabled = false;
+    context.canvas.width = SCREEN_WIDTH;
+    context.canvas.height = SCREEN_HEIGHT;
     return context;
 }
