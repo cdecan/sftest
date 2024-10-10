@@ -803,13 +803,13 @@ export class Fighter {
     }
 
     update(time, context, camera){
+        this.updateSpecialMoves(time);
         this.updatePosition(time);
         this.states[this.currentState].update(time);
         this.updateSlide(time);
         this.updateAnimation(time);
         this.updateStageConstraints(time, context, camera);
         this.updateAttackBoxCollided(time);
-        this.updateSpecialMoves(time);
     }
 
     draw(context, camera){

@@ -148,6 +148,14 @@ export class Ryu extends Fighter{
         ['tatsu-8', [[[588, 1535, 58, 91], [28, 89]], PushBox.IDLE, HurtBox.IDLE]],
         ['tatsu-9', [[[651, 1544, 53, 102], [28, 105]], PushBox.IDLE, HurtBox.IDLE]],
         ['tatsu-10', [[[710, 1559, 53, 95], [28, 89]], PushBox.IDLE, HurtBox.IDLE]],
+
+        //Shoryu
+        ['shoryu-1', [[[12, 1690, 62, 87], [28, 84]], PushBox.IDLE, HurtBox.INVINCIBLE, [-16,-70,52,58]]],
+        ['shoryu-2', [[[99, 1689, 68, 89], [28, 84]], PushBox.IDLE, HurtBox.INVINCIBLE, [-16,-70,52,58]]],
+        ['shoryu-3', [[[176, 1651, 59, 125], [28, 155]], PushBox.JUMP, HurtBox.INVINCIBLE, [-16,-170,42,58]]],
+        ['shoryu-4', [[[244, 1652, 53, 119], [28, 195]], PushBox.JUMP, HurtBox.INVINCIBLE, [-16,-200,42,58]]],
+        ['shoryu-5', [[[315, 1654, 49, 117], [28, 155]], PushBox.JUMP, HurtBox.IDLE]],
+        ['shoryu-6', [[[369, 1667, 59, 105], [28, 105]], PushBox.IDLE, HurtBox.IDLE]],
     ]);
 
     animations = {
@@ -280,6 +288,12 @@ export class Ryu extends Fighter{
             ['tatsu-6', 3], ['tatsu-7', 3], ['tatsu-8', 3], ['tatsu-9', 3], ['tatsu-10', 3],
             ['tatsu-10', FrameDelay.TRANSITION],
         ],
+        [FighterState.SPECIAL_3]: [
+            ['shoryu-1', 2], ['shoryu-2', 2],
+            ['shoryu-3', 4], ['shoryu-4', 10],
+            ['shoryu-5', 8], ['shoryu-6', 18],
+            ['shoryu-6', FrameDelay.TRANSITION],
+        ],
     };
 
     initialVelocity = {
@@ -399,9 +413,12 @@ export class Ryu extends Fighter{
     }
 
     handleShoryuState(time){
-        this.velocity.x = 300;
+        if(this.animationFrame < 4){
+            this.velocity.x = 200;
+        }else{
+            this.velocity.x = 0;
+        }
         if(!this.isAnimationCompleted()) return;
-        this.velocity.x = 0;
         this.changeState(FighterState.IDLE, time);
     }
 }
