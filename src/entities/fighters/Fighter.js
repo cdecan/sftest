@@ -639,8 +639,16 @@ export class Fighter {
         this.slideFriction = friction;
         this.attackStruck = true;
         
+        console.log(this.position.y);
+        console.log(STAGE_FLOOR);
         if(!((control.isBlockingLow(this.playerId, this.direction) && attackType === FighterAttackType.CROUCH)
-            ||control.isBlockingHigh(this.playerId, this.direction) && attackType === FighterAttackType.STAND)){
+            ||(control.isBlockingHigh(this.playerId, this.direction) && attackType === FighterAttackType.OVERHEAD)
+            ||(attackType === FighterAttackType.STAND && 
+                                                    (control.isBlockingHigh(this.playerId, this.direction) 
+                                                    || control.isBlockingLow(this.playerId, this.direction))))
+            ||(this.states[this.currentState].attackStrength !== undefined)
+            ||(this.position.y !== STAGE_FLOOR)
+        ){
 
             const newState = this.getHitState(attackStrength, hitLocation);
             playSound(this.soundHits[attackStrength]);
@@ -747,10 +755,7 @@ export class Fighter {
 
             const attackStrength = this.states[this.currentState].attackStrength;
 
-            stopSound(this.soundHits[attackStrength]);
-            
-            const strength = this.states[this.currentState].attackStrength;
-            
+            stopSound(this.soundHits[attackStrength]);            
             
             const hitPos = {
                 x: (actualHitBox.x + (actualHitBox.width/2) + actualOpponentHurtBox.x + (actualOpponentHurtBox.width/2))/2,
