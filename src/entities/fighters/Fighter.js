@@ -626,7 +626,7 @@ export class Fighter {
     }
 
     handleBlockState(time){
-        console.log("BLOCKING");
+        //console.log("BLOCKING");
         if(!this.isAnimationCompleted()) return;
         this.changeState(FighterState.IDLE, time);
     }
@@ -639,8 +639,8 @@ export class Fighter {
         this.slideFriction = friction;
         this.attackStruck = true;
         
-        console.log(this.position.y);
-        console.log(STAGE_FLOOR);
+        //console.log(this.position.y);
+        //console.log(STAGE_FLOOR);
         if(!((control.isBlockingLow(this.playerId, this.direction) && attackType === FighterAttackType.CROUCH)
             ||(control.isBlockingHigh(this.playerId, this.direction) && attackType === FighterAttackType.OVERHEAD)
             ||(attackType === FighterAttackType.STAND && 

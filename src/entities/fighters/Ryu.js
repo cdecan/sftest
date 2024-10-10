@@ -1,4 +1,4 @@
-import { FighterState, FrameDelay, HurtBox, PushBox, FIGHTER_HURT_DELAY, SpecialMoveDirection, SpecialMoveButton } from '../../constants/fighter.js';
+import { FighterState, FrameDelay, HurtBox, PushBox, FIGHTER_HURT_DELAY, SpecialMoveDirection, SpecialMoveButton, FighterAttackType, FighterAttackStrength } from '../../constants/fighter.js';
 import { playSound } from '../../engine/soundHandler.js';
 import { Fighter } from './Fighter.js';
 import { Fireball } from './special/Fireball.js';
@@ -132,14 +132,22 @@ export class Ryu extends Fighter{
         ['stun-3', [[[1108, 1923, 67, 90], [35, 88]], PushBox.IDLE, [[-22, -91, 28, 18], [-30, -72, 42, 40], [-26, -31, 40, 32]]]],
 
         //Hadouken
-        ['special-1', [[[16, 1790, 74, 90], [28, 89]], PushBox.IDLE, HurtBox.IDLE]],
-        ['special-2', [[[111, 1796, 85, 84], [25, 83]], PushBox.IDLE, HurtBox.IDLE]],
-        ['special-3', [[[209, 1798, 90, 83], [25, 82]], PushBox.IDLE, HurtBox.IDLE]],
-        ['special-4', [[[314, 1804, 106, 77], [23, 76]], PushBox.IDLE, [[38, -79, 26, 18],[21, -65, 40, 38],[-12, -30, 78, 30]]]],
+        ['hadouken-1', [[[16, 1790, 74, 90], [28, 89]], PushBox.IDLE, HurtBox.IDLE]],
+        ['hadouken-2', [[[111, 1796, 85, 84], [25, 83]], PushBox.IDLE, HurtBox.IDLE]],
+        ['hadouken-3', [[[209, 1798, 90, 83], [25, 82]], PushBox.IDLE, HurtBox.IDLE]],
+        ['hadouken-4', [[[314, 1804, 106, 77], [23, 76]], PushBox.IDLE, [[38, -79, 26, 18],[21, -65, 40, 38],[-12, -30, 78, 30]]]],
 
-
-        //OLD ATTACKS - HEAVY PUNCH:
-        // ['heavy-attack-1', [[[175,465,108,94],[24,92]], PushBox.IDLE]],
+        //Tatsumaki
+        ['tatsu-1', [[[16, 1527, 70, 104], [28, 105]], PushBox.IDLE, HurtBox.IDLE]],
+        ['tatsu-2', [[[99, 1525, 61, 83], [28, 89]], PushBox.IDLE, HurtBox.IDLE]],
+        ['tatsu-3', [[[168, 1531, 49, 65], [28, 89]], PushBox.IDLE, HurtBox.IDLE]],
+        ['tatsu-4', [[[235, 1526, 58, 74], [28, 89]], PushBox.IDLE, HurtBox.IDLE]],
+        ['tatsu-5', [[[305, 1524, 95, 102], [28, 105]], PushBox.IDLE, HurtBox.IDLE]],
+        ['tatsu-6', [[[410, 1529, 56, 96], [38, 99]], PushBox.IDLE, HurtBox.IDLE, [20, -70, 65, 45]]],
+        ['tatsu-7', [[[477, 1533, 95, 90], [78, 89]], PushBox.IDLE, HurtBox.IDLE]],
+        ['tatsu-8', [[[588, 1535, 58, 91], [28, 89]], PushBox.IDLE, HurtBox.IDLE]],
+        ['tatsu-9', [[[651, 1544, 53, 102], [28, 105]], PushBox.IDLE, HurtBox.IDLE]],
+        ['tatsu-10', [[[710, 1559, 53, 95], [28, 89]], PushBox.IDLE, HurtBox.IDLE]],
     ]);
 
     animations = {
@@ -264,8 +272,13 @@ export class Ryu extends Fighter{
             ['idle-1', 4], ['idle-1', 4], ['idle-1', FrameDelay.TRANSITION],
         ],
         [FighterState.SPECIAL_1]: [
-            ['special-1', 2], ['special-2', 8], ['special-3', 2], ['special-4', 40],
-            ['special-4', FrameDelay.TRANSITION],
+            ['hadouken-1', 2], ['hadouken-2', 8], ['hadouken-3', 2], ['hadouken-4', 40],
+            ['hadouken-4', FrameDelay.TRANSITION],
+        ],
+        [FighterState.SPECIAL_2]: [
+            ['tatsu-1', 3], ['tatsu-2', 3], ['tatsu-3', 3], ['tatsu-4', 3], ['tatsu-5', 3],
+            ['tatsu-6', 3], ['tatsu-7', 3], ['tatsu-8', 3], ['tatsu-9', 3], ['tatsu-10', 3],
+            ['tatsu-10', FrameDelay.TRANSITION],
         ],
     };
 
@@ -287,7 +300,23 @@ export class Ryu extends Fighter{
                 SpecialMoveButton.ANY
             ],
             cursor: 0,
-        }
+        },
+        {
+            state: FighterState.SPECIAL_2,
+            sequence: [
+                SpecialMoveDirection.DOWN, SpecialMoveDirection.BACKWARD_DOWN, SpecialMoveDirection.BACKWARD,
+                SpecialMoveButton.ANY
+            ],
+            cursor: 0,
+        },
+        {
+            state: FighterState.SPECIAL_3,
+            sequence: [
+                SpecialMoveDirection.FORWARD, SpecialMoveDirection.DOWN, SpecialMoveDirection.FORWARD_DOWN,
+                SpecialMoveButton.ANY
+            ],
+            cursor: 0,
+        },
     ];
 
     gravity = 1000;
@@ -311,6 +340,32 @@ export class Ryu extends Fighter{
             ]
         }
         this.states[FighterState.IDLE].validFrom.push(FighterState.SPECIAL_1);
+
+        this.states[FighterState.SPECIAL_2] = {
+            init: this.handleTatsuInit.bind(this),
+            update: this.handleTatsuState.bind(this),
+            attackType: FighterAttackType.STAND,
+            attackStrength: FighterAttackStrength.HEAVY,
+            validFrom: [
+                FighterState.IDLE, FighterState.WALK_FORWARD, FighterState.IDLE_TURN,
+                FighterState.CROUCH, FighterState.CROUCH_DOWN, FighterState.CROUCH_UP,
+                FighterState.CROUCH_TURN,
+            ]
+        }
+        this.states[FighterState.IDLE].validFrom.push(FighterState.SPECIAL_2);
+
+        this.states[FighterState.SPECIAL_3] = {
+            init: this.handleShoryuInit.bind(this),
+            update: this.handleShoryuState.bind(this),
+            attackType: FighterAttackType.STAND,
+            attackStrength: FighterAttackStrength.HEAVY,
+            validFrom: [
+                FighterState.IDLE, FighterState.WALK_FORWARD, FighterState.IDLE_TURN,
+                FighterState.CROUCH, FighterState.CROUCH_DOWN, FighterState.CROUCH_UP,
+                FighterState.CROUCH_TURN,
+            ]
+        }
+        this.states[FighterState.IDLE].validFrom.push(FighterState.SPECIAL_3);
     }
 
     handleHadoukenInit(_, __){
@@ -325,6 +380,28 @@ export class Ryu extends Fighter{
         }
 
         if(!this.isAnimationCompleted()) return;
+        this.changeState(FighterState.IDLE, time);
+    }
+
+    handleTatsuInit(_, __){
+        this.resetVelocities();
+    }
+
+    handleTatsuState(time){
+        this.velocity.x = 250;
+        if(!this.isAnimationCompleted()) return;
+        this.velocity.x = 0;
+        this.changeState(FighterState.IDLE, time);
+    }
+
+    handleShoryuInit(_, __){
+        this.resetVelocities();
+    }
+
+    handleShoryuState(time){
+        this.velocity.x = 300;
+        if(!this.isAnimationCompleted()) return;
+        this.velocity.x = 0;
         this.changeState(FighterState.IDLE, time);
     }
 }

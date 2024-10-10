@@ -59,6 +59,7 @@ export const PushBox = {
 }
 
 export const HurtBox = {
+    INVINCIBLE: [[0,0,0,0],[0,0,0,0],[0,0,0,0]],
     IDLE: [[-8, -88, 24, 16],[-26, -74, 40, 42],[-26, -31, 40, 32]],
     BACKWARD: [[-19, -88, 24, 16],[-26, -74, 40, 42],[-26, -31, 40, 32]],
     FORWARD: [[-3, -88, 24, 16],[-26, -74, 40, 42],[-26, -31, 40, 32]],
@@ -148,5 +149,4 @@ export const SpecialMoveDirection = {
 
 export const SpecialMoveButton = {
     ANY: 'any',
-
 };
