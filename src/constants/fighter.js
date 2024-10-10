@@ -11,6 +11,8 @@ export const FighterDirection = {
 
 export const FighterAttackType = {
   STAND: 'stand',  
+  CROUCH: 'crouch',
+  OVERHEAD: 'overhead',
 };
 
 export const FighterState = {
@@ -30,12 +32,19 @@ export const FighterState = {
     LIGHT_ATTACK: 'light-attack',
     MEDIUM_ATTACK: 'medium-attack',
     HEAVY_ATTACK: 'heavy-attack',
+    CROUCHING_LIGHT_ATTACK: 'crouching-light-attack',
+    CROUCHING_MEDIUM_ATTACK: 'crouching-medium-attack',
+    CROUCHING_HEAVY_ATTACK: 'crouching-heavy-attack',
+    JUMPING_LIGHT_ATTACK: 'jumping-light-attack',
+    JUMPING_MEDIUM_ATTACK: 'jumping-medium-attack',
+    JUMPING_HEAVY_ATTACK: 'jumping-heavy-attack',
     HURT_HEAD_LIGHT: 'hurt-head-light',
     HURT_HEAD_MEDIUM: 'hurt-head-medium',
     HURT_HEAD_HEAVY: 'hurt-head-heavy',
     HURT_BODY_LIGHT: 'hurt-body-light',
     HURT_BODY_MEDIUM: 'hurt-body-medium',
     HURT_BODY_HEAVY: 'hurt-body-heavy',
+    BLOCKING: 'blocking',
     SPECIAL_1: 'special-1',
     SPECIAL_2: 'special-2',
     SPECIAL_3: 'special-3',
@@ -46,6 +55,7 @@ export const PushBox = {
     JUMP: [-16, -91, 32, 66],
     BEND: [-16, -58, 32, 58],
     CROUCH: [-16, -50, 32, 50],
+    JUMP_ATTACK: [-16, -80, 32, 50],
 }
 
 export const HurtBox = {
@@ -56,6 +66,7 @@ export const HurtBox = {
     BEND: [[-2, -68, 24, 18],[-16, -53, 44, 24],[-16, -24, 44, 24]],
     CROUCH: [[6, -61, 24, 18],[-16, -46, 44, 24],[-16, -24, 44, 24]],
     PUNCH: [[11, -94, 24, 18],[-7, -77, 40, 43],[-7, -33, 40, 33]],
+    JUMP_ATTACK: [[6, -91, 24, 18],[-16, -76, 44, 24],[-16, -54, 44, 24]],
 };
 
 export const FighterHurtBox = {
@@ -116,9 +127,11 @@ export const hurtStateValidFrom = [
     FighterState.IDLE, FighterState.WALK_BACKWARD, FighterState.WALK_FORWARD,
     FighterState.JUMP_LAND, FighterState.JUMP_START, FighterState.IDLE_TURN,
     FighterState.LIGHT_ATTACK, FighterState.MEDIUM_ATTACK, FighterState.HEAVY_ATTACK,
+    FighterState.CROUCHING_LIGHT_ATTACK, FighterState.CROUCHING_MEDIUM_ATTACK, FighterState.CROUCHING_HEAVY_ATTACK,
+    FighterState.JUMPING_LIGHT_ATTACK, FighterState.JUMPING_MEDIUM_ATTACK, FighterState.JUMPING_HEAVY_ATTACK,
     FighterState.HURT_HEAD_LIGHT, FighterState.HURT_HEAD_MEDIUM, FighterState.HURT_HEAD_HEAVY,
     FighterState.HURT_BODY_LIGHT, FighterState.HURT_BODY_MEDIUM, FighterState.HURT_BODY_HEAVY,
-    FighterState.SPECIAL_1, FighterState.SPECIAL_2, FighterState.SPECIAL_3,
+    FighterState.SPECIAL_1, FighterState.SPECIAL_2, FighterState.SPECIAL_3, FighterState.BLOCKING,
 ];
 
 export const SpecialMoveDirection = {

@@ -135,3 +135,6 @@ export const isIdle = (id) => !(isLeft(id) || isRight(id) || isUp(id) || isDown(
 export const isLightAttack = (id) => isControlPressed(id, Control.LIGHT_ATTACK);
 export const isMediumAttack = (id) => isControlPressed(id, Control.MEDIUM_ATTACK);
 export const isHeavyAttack = (id) => isControlPressed(id, Control.HEAVY_ATTACK);
+
+export const isBlockingLow = (id, direction) => isBackward(id, direction) && isDown(id);
+export const isBlockingHigh = (id, direction) => isBackward(id, direction) && !isDown(id);

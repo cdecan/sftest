@@ -70,12 +70,12 @@ export class Ryu extends Fighter{
 
         //Light Attack
         ['light-attack-1', [[[9,365,64,91],[32,88]], PushBox.IDLE, HurtBox.IDLE]],
-        ['light-attack-2', [[[98,365,92,91],[32,88]], PushBox.IDLE, HurtBox.IDLE, [11, -85, 50, 18]]],
+        ['light-attack-2', [[[98,365,92,91],[32,88]], PushBox.IDLE, HurtBox.IDLE, [11, -75, 50, 18]]],
         
         //Medium Attack
         ['medium-attack-1', [[[6,466,60,94],[29,92]], PushBox.IDLE, HurtBox.IDLE]],
         ['medium-attack-2', [[[86,465,74,95],[29,92]], PushBox.IDLE, HurtBox.PUNCH]],
-        ['medium-attack-3', [[[175,465,108,94],[24,92]], PushBox.IDLE, HurtBox.PUNCH, [17, -85, 76, 14]]],
+        ['medium-attack-3', [[[175,465,108,94],[24,92]], PushBox.IDLE, HurtBox.PUNCH, [17, -78, 76, 14]]],
 
         //Heavy Attack
         ['heavy-attack-1', [[[5,1196,61,90],[37,87]], PushBox.IDLE, [[-41, -78, 20, 20],[-25, -78, 42, 42],[-11, -50, 42, 50]]]],
@@ -83,6 +83,36 @@ export class Ryu extends Fighter{
         ['heavy-attack-3', [[[176,1191,120,94],[42,91]], PushBox.IDLE, [[13, -91, 62, 34],[-25, -78, 42, 42],[-11, -50, 42, 50]], [21, -97, 62, 24]]],
         ['heavy-attack-4', [[[306,1208,101,77],[39,74]], PushBox.IDLE, [[-41, -78, 20, 20],[-25, -78, 42, 42],[-11, -50, 42, 50]]]],
         ['heavy-attack-5', [[[418,1204,64,81],[38,78]], PushBox.IDLE, [[-41, -78, 20, 20],[-25, -78, 42, 42],[-11, -50, 42, 50]]]],
+
+        //Crouching Light Attack
+        ['crouching-light-attack-1', [[[894,953,71,64],[27,61]], PushBox.CROUCH, HurtBox.CROUCH]],
+        ['crouching-light-attack-2', [[[977,953,112,64],[27,61]], PushBox.CROUCH, HurtBox.CROUCH, [25, -15, 65, 18]]],
+
+        //Crouching Medium Attack
+        ['crouching-medium-attack-1', [[[247,583,64,62],[25,59]], PushBox.CROUCH, HurtBox.CROUCH]],
+        ['crouching-medium-attack-2', [[[318,586,66,62],[25,59]], PushBox.CROUCH, HurtBox.CROUCH]],
+        ['crouching-medium-attack-3', [[[394,586,92,62],[25,59]], PushBox.CROUCH, HurtBox.CROUCH, [17, -50, 56, 14]]],
+
+        //Crouching Heavy Attack
+        ['crouching-heavy-attack-1', [[[1424,1222,53,60],[37,57]], PushBox.CROUCH, HurtBox.CROUCH]],
+        ['crouching-heavy-attack-2', [[[1487,1223,121,59],[44,57]], PushBox.CROUCH, HurtBox.CROUCH, [15, -20, 70, 17]]],
+        ['crouching-heavy-attack-3', [[[1611,1227,63,57],[32,57]], PushBox.CROUCH, HurtBox.CROUCH]],
+        ['crouching-heavy-attack-4', [[[1681,1225,63,59],[49,57]], PushBox.CROUCH, HurtBox.CROUCH]],
+
+        //Jumping Light Attack
+        ['jumping-light-attack-1', [[[353,362,52,69],[27,91]], PushBox.JUMP_ATTACK, HurtBox.JUMP_ATTACK]],
+        ['jumping-light-attack-2', [[[415,365,81,71],[27,91]], PushBox.JUMP_ATTACK, HurtBox.JUMP_ATTACK, [40, -65, 15, 18]]],
+
+        //Jumping Medium Attack
+        ['jumping-medium-attack-1', [[[4,572,70,77],[27,91]], PushBox.JUMP_ATTACK, HurtBox.JUMP_ATTACK]],
+        ['jumping-medium-attack-2', [[[87,567,52,69],[27,91]], PushBox.JUMP_ATTACK, HurtBox.JUMP_ATTACK]],
+        ['jumping-medium-attack-3', [[[149,576,88,64],[27,91]], PushBox.JUMP_ATTACK, HurtBox.JUMP_ATTACK, [40, -65, 25, 20]]],
+
+        //Jumping Heavy Attack
+        ['jumping-heavy-attack-1', [[[1172,1206,59,76],[27,91]], PushBox.JUMP_ATTACK, HurtBox.JUMP_ATTACK]],
+        ['jumping-heavy-attack-2', [[[1241,1210,63,72],[27,91]], PushBox.JUMP_ATTACK, HurtBox.JUMP_ATTACK]],
+        ['jumping-heavy-attack-3', [[[1307,1212,110,63],[27,91]], PushBox.JUMP_ATTACK, HurtBox.JUMP_ATTACK, [20, -70, 65, 45]]],
+
 
         //Hit Face
         ['hit-face-1', [[[167, 2043, 263-167, 2134-2043], [41, 87]], PushBox.IDLE, [[-25, -89, 20, 20], [-33, -74, 40, 46], [-30, -37, 40, 38]]]],
@@ -178,6 +208,33 @@ export class Ryu extends Fighter{
             ['heavy-attack-4', 10], ['heavy-attack-5', 7],
             ['heavy-attack-5', FrameDelay.TRANSITION],
         ],
+        [FighterState.CROUCHING_LIGHT_ATTACK]: [
+            ['crouching-light-attack-1', 1], ['crouching-light-attack-2', 4], ['crouching-light-attack-1', 2],
+            ['crouching-light-attack-1', FrameDelay.TRANSITION],
+        ],
+        [FighterState.CROUCHING_MEDIUM_ATTACK]: [
+            ['crouching-medium-attack-1', 1], ['crouching-medium-attack-2', 2], ['crouching-medium-attack-3', 4], 
+            ['crouching-medium-attack-2', 3], ['crouching-medium-attack-1', 3],
+            ['crouching-medium-attack-1', FrameDelay.TRANSITION],
+        ],
+        [FighterState.CROUCHING_HEAVY_ATTACK]: [
+            ['crouching-heavy-attack-1', 3], ['crouching-heavy-attack-2', 8],
+            ['crouching-heavy-attack-3', 8], ['crouching-heavy-attack-4', 8],
+            ['crouching-heavy-attack-4', FrameDelay.TRANSITION],
+        ],
+        [FighterState.JUMPING_LIGHT_ATTACK]: [
+            ['jumping-light-attack-1', 1], ['jumping-light-attack-2', 4], ['jumping-light-attack-1', 2],
+            ['jumping-light-attack-1', FrameDelay.TRANSITION],
+        ],
+        [FighterState.JUMPING_MEDIUM_ATTACK]: [
+            ['jumping-medium-attack-1', 1], ['jumping-medium-attack-2', 2], ['jumping-medium-attack-3', 8], 
+            ['jumping-medium-attack-2', 3], ['jumping-medium-attack-1', 3],
+            ['jumping-medium-attack-1', FrameDelay.TRANSITION],
+        ],
+        [FighterState.JUMPING_HEAVY_ATTACK]: [
+            ['jumping-heavy-attack-1', 1], ['jumping-heavy-attack-2', 2], ['jumping-heavy-attack-3', 99],
+            ['jumping-heavy-attack-1', FrameDelay.TRANSITION],
+        ],
         [FighterState.HURT_HEAD_LIGHT]: [
             ['hit-face-1', FIGHTER_HURT_DELAY], ['hit-face-1', 3],
             ['hit-face-2', 8], ['hit-face-2', FrameDelay.TRANSITION],
@@ -203,17 +260,13 @@ export class Ryu extends Fighter{
             ['hit-stomach-3', 4], ['hit-stomach-4', 4],
             ['stun-3', 9], ['stun-3', FrameDelay.TRANSITION],
         ],
+        [FighterState.BLOCKING]: [
+            ['idle-1', 4], ['idle-1', 4], ['idle-1', FrameDelay.TRANSITION],
+        ],
         [FighterState.SPECIAL_1]: [
             ['special-1', 2], ['special-2', 8], ['special-3', 2], ['special-4', 40],
             ['special-4', FrameDelay.TRANSITION],
         ],
-
-        //OLD ATTACK -  HEAVY PUNCH
-        // [FighterState.HEAVY_ATTACK]: [
-        //     ['medium-attack-1', 50], ['medium-attack-2', 33], ['heavy-attack-1', 100], 
-        //     ['medium-attack-2', 166], ['medium-attack-1', 199],
-        //     ['medium-attack-1', FrameDelay.TRANSITION],
-        // ],
     };
 
     initialVelocity = {
