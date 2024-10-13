@@ -280,7 +280,6 @@ export class Fighter {
     soundLand = document.querySelector('audio#sound-fighter-land');
 
     constructor(playerId, onAttackHit, onAttackBlocked){
-        console.log(onAttackBlocked);
         this.onAttackHit = onAttackHit;
         this.onAttackBlocked = onAttackBlocked;
         this.playerId = playerId;
