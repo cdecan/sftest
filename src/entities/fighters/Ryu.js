@@ -1,4 +1,4 @@
-import { FighterState, FrameDelay, HurtBox, PushBox, FIGHTER_HURT_DELAY, SpecialMoveDirection, SpecialMoveButton, FighterAttackType, FighterAttackStrength } from '../../constants/fighter.js';
+import { FighterState, FrameDelay, HurtBox, PushBox, FIGHTER_HURT_DELAY, SpecialMoveDirection, SpecialMoveButton, FighterAttackType, FighterAttackStrength, specialStateValidFrom } from '../../constants/fighter.js';
 import { playSound } from '../../engine/soundHandler.js';
 import { Fighter } from './Fighter.js';
 import { Fireball } from './special/Fireball.js';
@@ -142,9 +142,9 @@ export class Ryu extends Fighter{
         ['tatsu-2', [[[99, 1525, 61, 83], [28, 89]], PushBox.IDLE, HurtBox.IDLE]],
         ['tatsu-3', [[[168, 1531, 49, 65], [28, 89]], PushBox.IDLE, HurtBox.IDLE]],
         ['tatsu-4', [[[235, 1526, 58, 74], [28, 89]], PushBox.IDLE, HurtBox.IDLE]],
-        ['tatsu-5', [[[305, 1524, 95, 102], [28, 105]], PushBox.IDLE, HurtBox.IDLE]],
-        ['tatsu-6', [[[410, 1529, 56, 96], [38, 99]], PushBox.IDLE, HurtBox.IDLE, [20, -70, 65, 45]]],
-        ['tatsu-7', [[[477, 1533, 95, 90], [78, 89]], PushBox.IDLE, HurtBox.IDLE]],
+        ['tatsu-5', [[[305, 1524, 95, 102], [28, 105]], PushBox.IDLE, HurtBox.IDLE, [10, -70, 65, 45]]],
+        ['tatsu-6', [[[410, 1529, 56, 96], [38, 99]], PushBox.IDLE, HurtBox.IDLE]],
+        ['tatsu-7', [[[477, 1533, 95, 90], [78, 89]], PushBox.IDLE, HurtBox.IDLE, [-80, -70, 65, 45]]],
         ['tatsu-8', [[[588, 1535, 58, 91], [28, 89]], PushBox.IDLE, HurtBox.IDLE]],
         ['tatsu-9', [[[651, 1544, 53, 102], [28, 105]], PushBox.IDLE, HurtBox.IDLE]],
         ['tatsu-10', [[[710, 1559, 53, 95], [28, 89]], PushBox.IDLE, HurtBox.IDLE]],
@@ -277,7 +277,7 @@ export class Ryu extends Fighter{
             ['stun-3', 9], ['stun-3', FrameDelay.TRANSITION],
         ],
         [FighterState.BLOCKING]: [
-            ['idle-1', 4], ['idle-1', 4], ['idle-1', FrameDelay.TRANSITION],
+            ['idle-1', FIGHTER_HURT_DELAY], ['idle-1', 4], ['idle-1', 4], ['idle-1', FrameDelay.TRANSITION],
         ],
         [FighterState.SPECIAL_1]: [
             ['hadouken-1', 2], ['hadouken-2', 8], ['hadouken-3', 2], ['hadouken-4', 40],
@@ -338,8 +338,8 @@ export class Ryu extends Fighter{
     fireballFired = false;
 
 
-    constructor(playerId, onAttackHit, entityList){
-        super(playerId, onAttackHit);
+    constructor(playerId, onAttackHit, onAttackBlocked, entityList){
+        super(playerId, onAttackHit, onAttackBlocked);
 
         this.entityList = entityList;
         
@@ -347,11 +347,7 @@ export class Ryu extends Fighter{
             init: this.handleHadoukenInit.bind(this),
             update: this.handleHadoukenState.bind(this),
             shadow: [1.6, 1, 22, 0],
-            validFrom: [
-                FighterState.IDLE, FighterState.WALK_FORWARD, FighterState.IDLE_TURN,
-                FighterState.CROUCH, FighterState.CROUCH_DOWN, FighterState.CROUCH_UP,
-                FighterState.CROUCH_TURN, 
-            ]
+            validFrom: specialStateValidFrom
         }
         this.states[FighterState.IDLE].validFrom.push(FighterState.SPECIAL_1);
 
@@ -360,11 +356,7 @@ export class Ryu extends Fighter{
             update: this.handleTatsuState.bind(this),
             attackType: FighterAttackType.STAND,
             attackStrength: FighterAttackStrength.HEAVY,
-            validFrom: [
-                FighterState.IDLE, FighterState.WALK_FORWARD, FighterState.IDLE_TURN,
-                FighterState.CROUCH, FighterState.CROUCH_DOWN, FighterState.CROUCH_UP,
-                FighterState.CROUCH_TURN,
-            ]
+            validFrom: specialStateValidFrom
         }
         this.states[FighterState.IDLE].validFrom.push(FighterState.SPECIAL_2);
 
@@ -373,11 +365,7 @@ export class Ryu extends Fighter{
             update: this.handleShoryuState.bind(this),
             attackType: FighterAttackType.STAND,
             attackStrength: FighterAttackStrength.HEAVY,
-            validFrom: [
-                FighterState.IDLE, FighterState.WALK_FORWARD, FighterState.IDLE_TURN,
-                FighterState.CROUCH, FighterState.CROUCH_DOWN, FighterState.CROUCH_UP,
-                FighterState.CROUCH_TURN,
-            ]
+            validFrom: specialStateValidFrom
         }
         this.states[FighterState.IDLE].validFrom.push(FighterState.SPECIAL_3);
     }

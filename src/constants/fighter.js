@@ -135,6 +135,15 @@ export const hurtStateValidFrom = [
     FighterState.SPECIAL_1, FighterState.SPECIAL_2, FighterState.SPECIAL_3, FighterState.BLOCKING,
 ];
 
+export const specialStateValidFrom = [
+        FighterState.IDLE, FighterState.WALK_FORWARD, FighterState.WALK_BACKWARD,
+        FighterState.CROUCH, FighterState.CROUCH_DOWN, FighterState.CROUCH_UP,
+        FighterState.IDLE_TURN, FighterState.CROUCH_TURN,
+        FighterState.LIGHT_ATTACK, FighterState.MEDIUM_ATTACK, FighterState.HEAVY_ATTACK,
+        FighterState.CROUCHING_LIGHT_ATTACK, FighterState.CROUCHING_MEDIUM_ATTACK, FighterState.CROUCHING_HEAVY_ATTACK,
+
+];
+
 export const SpecialMoveDirection = {
     BACKWARD: 'backward',
     BACKWARD_UP: 'backward-up',

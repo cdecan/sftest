@@ -56,6 +56,11 @@ export class BattleScene{
         this.entities.add(this.getHitSplashClass(strength), time, position.x, position.y, playerId);
     }
 
+    handleAttackBlocked(time, playerId, opponentId) {
+        this.hurtTimer = time.previous + (FIGHTER_HURT_DELAY * FRAME_TIME);
+        this.fighterDrawOrder = [opponentId, playerId];
+    }
+
     startRound(){
         this.fighters = this.getFighterEntities();
         this.camera = new Camera(STAGE_MID_POINT + STAGE_PADDING - 192, 16, this.fighters);
@@ -76,7 +81,7 @@ export class BattleScene{
     getFighterEntity(fighterState, index){
         const FighterEntityClass = this.getFighterEntityClass(fighterState.id);
 
-        return new FighterEntityClass(index, this.handleAttackHit.bind(this), this.entities);
+        return new FighterEntityClass(index, this.handleAttackHit.bind(this), this.handleAttackBlocked.bind(this), this.entities);
     }
 
     getFighterEntities(){
@@ -92,6 +97,7 @@ export class BattleScene{
             
             if(time.previous < this.hurtTimer){
                 fighter.updateHurtShake(time, this.hurtTimer);
+                fighter.updateSpecialMoves(time);
             }else{
                 fighter.update(time, context, this.camera);
             }
