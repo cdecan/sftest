@@ -131,6 +131,14 @@ export class BattleScene{
     }
 
     updateGameOver(time){
+        if(this.overlays[0].time <= 0){
+            if(this.overlays[0].healthBars[0].hitPoints > this.overlays[0].healthBars[1].hitPoints){
+                this.overlays[0].healthBars[1].hitPoints = 0;
+            }else if(this.overlays[0].healthBars[0].hitPoints < this.overlays[0].healthBars[1].hitPoints){
+                this.overlays[0].healthBars[0].hitPoints = 0;
+            }
+        }
+
         for(const index in this.overlays[0].healthBars){
             if(this.overlays[0].healthBars[index].hitPoints === 0){
                 const winner = this.getOppositeIndex(index);

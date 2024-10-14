@@ -1,7 +1,14 @@
 import { FighterState, FrameDelay, HurtBox, PushBox } from "../../constants/fighter.js";
+import { DEBUG_drawDebug } from "../../utils/fighterDebug.js";
+import { Cammy } from "./Cammy.js";
 import { Ryu } from "./index.js";
 
 export class Player extends Ryu{
+
+    images = {
+        'ryu': this.image,
+    };
+    currentImage = this.images['ryu'];
 
     constructor(playerId, onAttackHit, onAttackBlocked, entityList, special1=undefined, special2=undefined, special3=undefined, specialMoveChar=undefined){
         super(playerId, onAttackHit, onAttackBlocked, entityList);
@@ -10,7 +17,7 @@ export class Player extends Ryu{
         if(special2) this.changeSpecial(2, special2, specialMoveChar);
         if(special3) this.changeSpecial(3, special3, specialMoveChar);
 
-        //this.changeSpecial(1, FighterState.SPECIAL_3, new Ryu(playerId, onAttackHit, onAttackBlocked));
+        //this.changeSpecial(1, FighterState.SPECIAL_1, new Cammy(playerId, onAttackHit, onAttackBlocked));
     }
 
     changeSpecial(specialNumber, specialMoveID, specialMoveChar){
@@ -18,6 +25,15 @@ export class Player extends Ryu{
         initName = initName.substring(6, initName.length);
         let updateName = specialMoveChar.states[specialMoveID].update.name;
         updateName = updateName.substring(6, updateName.length);
+
+        if(!this.images[specialMoveChar.image.alt]){
+            this.images[specialMoveChar.image.alt] = specialMoveChar.image;
+        }
+
+        //this.currentImage = this.images[specialMoveChar.image.alt];
+
+        this.frames = new Map([...this.frames, ...specialMoveChar.frames]);
+
         switch (specialNumber) {
             case 1:
                 this.states[FighterState.SPECIAL_1] = specialMoveChar.states[specialMoveID];
@@ -40,5 +56,40 @@ export class Player extends Ryu{
             default:
                 break;
         }
+    }
+
+    changeState(newState, time, args){
+        if(!this.states[newState].validFrom.includes(this.currentState)){
+            console.warn(`Illegal transition from "${this.currentState}" to "${newState}"`)        
+            return;
+        }
+
+        this.currentImage = this.images['ryu'];
+        this.hasHit = false;
+        this.currentState = newState;
+        this.setAnimationFrame(0, time);
+        this.states[this.currentState].init(time, args);
+    }
+
+    draw(context, camera){
+
+        const [frameKey] = this.animations[this.currentState][this.animationFrame];
+        const[[
+            [x,y,width,height],
+            [originX, originY],
+        ]] = this.frames.get(frameKey);
+
+        context.scale(this.direction, 1);
+        context.drawImage(
+            this.currentImage,
+            x, y,
+            width, height,
+            Math.floor((this.position.x - this.hurtShake - camera.position.x) * this.direction) - originX,
+            Math.floor(this.position.y - camera.position.y) - originY,
+            width, height
+        );
+        context.setTransform(1,0,0,1,0,0);
+
+        DEBUG_drawDebug(this, context, camera);
     }
 }

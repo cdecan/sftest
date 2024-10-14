@@ -58,6 +58,7 @@ export const PushBox = {
     BEND: [-16, -58, 32, 58],
     CROUCH: [-16, -50, 32, 50],
     JUMP_ATTACK: [-16, -80, 32, 50],
+    DRILL_KICK: [-16, -60, 32, 30],
 }
 
 export const HurtBox = {
@@ -70,6 +71,7 @@ export const HurtBox = {
     CROUCH: [[6, -61, 24, 18],[-16, -46, 44, 24],[-16, -24, 44, 24]],
     PUNCH: [[11, -94, 24, 18],[-7, -77, 40, 43],[-7, -33, 40, 33]],
     JUMP_ATTACK: [[6, -91, 24, 18],[-16, -76, 44, 24],[-16, -54, 44, 24]],
+    DRILL_KICK: [[-36, -60, 10, 30],[-26, -60, 110, 30],[84, -60, 30, 30]],
 };
 
 export const FighterHurtBox = {

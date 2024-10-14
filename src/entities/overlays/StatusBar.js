@@ -5,7 +5,7 @@ import { drawFrame } from "../../utils/context.js";
 
 export class StatusBar {
     
-    time = 99;
+    time = 10;//99;
     timeTimer = 0;
     timeFlashTimer = 0;
     useFlashFrames = false;

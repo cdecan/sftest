@@ -184,7 +184,7 @@ export class Fighter {
             ],
         },
         [FighterState.CROUCHING_MEDIUM_ATTACK]: {
-            attackType: FighterAttackType.CROUCH,
+            attackType: FighterAttackType.STAND,
             attackStrength: FighterAttackStrength.MEDIUM,
             init: this.handleAttackInit.bind(this),
             update: this.handleCrouchAttackState.bind(this),
@@ -657,6 +657,7 @@ export class Fighter {
     }
 
     updateWin(time){
+        if(this.currentState != FighterState.WIN) this.changeState(FighterState.WIN, time);
         if(!this.isAnimationCompleted()) return;
         this.changeState(FighterState.IDLE, time);
         this.winStart = false;
@@ -802,6 +803,7 @@ export class Fighter {
             hitPos.x -= 4 - Math.random() * 8;
             hitPos.y -= 4 - Math.random() * 8;
             
+
             this.hasHit = true;
             this.opponent.handleAttackHit(attackStrength, attackType, hitPos, hurtLocation, FighterHurtBy.FIGHTER, time);
             return;
