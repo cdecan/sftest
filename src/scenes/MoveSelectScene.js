@@ -63,9 +63,6 @@ export class MoveSelectScene {
 
     constructor(fighters, winnerID, SFGame){
         this.fighters = fighters;
-        if(this.fighters.length == 0) {
-            this.fighters = [new Ryu()];
-        }
         this.winnerID = winnerID;
         this.SFGame = SFGame;
 

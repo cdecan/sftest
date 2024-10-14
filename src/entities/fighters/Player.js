@@ -11,14 +11,8 @@ export class Player extends Ryu{
     currentImage = this.images['ryu'];
 
 
-    constructor(playerId, onAttackHit, onAttackBlocked, entityList, special1=undefined, special2=undefined, special3=undefined, specialMoveChar=undefined){
+    constructor(playerId, onAttackHit, onAttackBlocked, entityList){
         super(playerId, onAttackHit, onAttackBlocked, entityList);
-
-        if(special1) this.changeSpecial(1, special1, specialMoveChar);
-        if(special2) this.changeSpecial(2, special2, specialMoveChar);
-        if(special3) this.changeSpecial(3, special3, specialMoveChar);
-
-        //this.changeSpecial(1, FighterState.SPECIAL_1, new Cammy(playerId, onAttackHit, onAttackBlocked));
     }
 
     changeSpecial(specialNumber, specialMoveID, specialMoveChar){
@@ -71,6 +65,10 @@ export class Player extends Ryu{
         this.currentState = newState;
         this.setAnimationFrame(0, time);
         this.states[this.currentState].init(time, args);
+    }
+
+    setEntityList(entityList){
+        this.entityList = entityList;
     }
 
     draw(context, camera){

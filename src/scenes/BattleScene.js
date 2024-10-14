@@ -4,13 +4,12 @@ import { StatusBar } from "../entities/overlays/StatusBar.js";
 import { Camera } from "../engine/Camera.js";
 import { Ryu, Player } from "../entities/fighters/index.js";
 import { gameState } from "../state/gameState.js";
-import { FIGHTER_HURT_DELAY, FighterAttackBaseData, FighterAttackStrength, FighterId, FighterState } from "../constants/fighter.js";
+import { FIGHTER_HURT_DELAY, FighterAttackBaseData, FighterAttackStrength, FighterId } from "../constants/fighter.js";
 import { LighHitSplash, MediumHitSplash, HeavyHitSplash, Shadow } from "../entities/fighters/shared/index.js";
 import { FRAME_TIME } from "../constants/game.js";
 import { EntityList } from "../engine/EntityList.js";
 import { pollControl } from "../engine/controlHistory.js";
 import { SceneTypes } from "../constants/scenes.js";
-import { HEALTH_MAX_HP } from "../constants/battle.js";
 
 
 export class BattleScene{
@@ -68,6 +67,10 @@ export class BattleScene{
     startRound(){
         if(this.fighters.length == 0){
             this.fighters = this.getFighterEntities();
+        } else {
+            for(var fighter of this.fighters){
+                fighter.setEntityList(this.entities);
+            }
         }
         this.camera = new Camera(STAGE_MID_POINT + STAGE_PADDING - 192, 16, this.fighters);
         this.shadows = this.fighters.map(fighter => new Shadow(fighter));

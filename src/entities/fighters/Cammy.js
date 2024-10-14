@@ -32,10 +32,8 @@ export class Cammy extends Fighter{
     };
 
 
-    constructor(playerId, onAttackHit, onAttackBlocked, entityList){
+    constructor(playerId, onAttackHit, onAttackBlocked){
         super(playerId, onAttackHit, onAttackBlocked);
-
-        this.entityList = entityList;
         
         this.states[FighterState.SPECIAL_1] = {
             init: this.handleCannonDrillInit.bind(this),
@@ -57,8 +55,7 @@ export class Cammy extends Fighter{
     }
 
     handleCannonDrillState(time){
-
-        this.velocity.x = 250;
+        if(this.animationFrame > 2 && this.animationFrame < 10) this.velocity.x = 500;
         if(!this.isAnimationCompleted()) return;
         this.velocity.x = 0;
         this.changeState(FighterState.IDLE, time);
