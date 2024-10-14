@@ -10,6 +10,7 @@ export class Player extends Ryu{
     };
     currentImage = this.images['ryu'];
 
+
     constructor(playerId, onAttackHit, onAttackBlocked, entityList, special1=undefined, special2=undefined, special3=undefined, specialMoveChar=undefined){
         super(playerId, onAttackHit, onAttackBlocked, entityList);
 
@@ -21,6 +22,7 @@ export class Player extends Ryu{
     }
 
     changeSpecial(specialNumber, specialMoveID, specialMoveChar){
+
         let initName = specialMoveChar.states[specialMoveID].init.name;
         initName = initName.substring(6, initName.length);
         let updateName = specialMoveChar.states[specialMoveID].update.name;

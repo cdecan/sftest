@@ -10,6 +10,7 @@ import { FRAME_TIME } from "../constants/game.js";
 import { EntityList } from "../engine/EntityList.js";
 import { pollControl } from "../engine/controlHistory.js";
 import { SceneTypes } from "../constants/scenes.js";
+import { HEALTH_MAX_HP } from "../constants/battle.js";
 
 
 export class BattleScene{
@@ -20,7 +21,8 @@ export class BattleScene{
     hurtTimer = undefined;
     
     
-    constructor(SFGame){
+    constructor(SFGame, fighters=[]){
+        this.fighters = fighters;
         this.SFGame = SFGame;
         this.stage = new KenStage();
         this.entities = new EntityList();
@@ -64,7 +66,9 @@ export class BattleScene{
     }
 
     startRound(){
-        this.fighters = this.getFighterEntities();
+        if(this.fighters.length == 0){
+            this.fighters = this.getFighterEntities();
+        }
         this.camera = new Camera(STAGE_MID_POINT + STAGE_PADDING - 192, 16, this.fighters);
         this.shadows = this.fighters.map(fighter => new Shadow(fighter));
     }

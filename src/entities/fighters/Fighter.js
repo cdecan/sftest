@@ -27,10 +27,10 @@ export class Fighter {
     slideVelocity = 0;
     slideFriction = 0;
     
-    gravity = 0;
     velocity = {x: 0, y: 0};
     initialVelocity = {};
     attackStruck = false;
+    gravity = 0;
 
 
     boxes = {
@@ -871,6 +871,34 @@ export class Fighter {
         context.setTransform(1,0,0,1,0,0);
 
         DEBUG_drawDebug(this, context, camera);
+    }
+
+    reset(playerId){
+        this.playerId = playerId;
+        this.position = {
+            x: STAGE_MID_POINT + STAGE_PADDING + (playerId === 0 ? -FIGHTER_START_DISTANCE : FIGHTER_START_DISTANCE),
+            y: STAGE_FLOOR
+        };
+        
+        this.direction = playerId === 0 ? FighterDirection.RIGHT : FighterDirection.LEFT;
+
+        this.animationFrame = 0;
+        this.animationTimer = 0;
+        
+        this.currentState = FighterState.IDLE;
+        //this.opponent = undefined;
+        this.winStart = false;
+        this.winStop = false;
+
+        this.hasHit = false;
+        this.hurtBy = undefined;
+        this.hurtShake = 0;
+        this.hurtShakeTimer = 0;
+        this.slideVelocity = 0;
+        this.slideFriction = 0;
+        
+        this.velocity = {x: 0, y: 0};
+
     }
 
 }

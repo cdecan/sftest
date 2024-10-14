@@ -3,7 +3,7 @@ import { createDefaultFighterState } from "./fighterState.js";
 
 export const gameState = {
     fighters: [
-        createDefaultFighterState(FighterId.Ryu),
-        createDefaultFighterState(FighterId.Ryu),
+        createDefaultFighterState(FighterId.Player),
+        createDefaultFighterState(FighterId.Player),
     ],
 };
