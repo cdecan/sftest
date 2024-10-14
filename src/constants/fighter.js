@@ -48,6 +48,8 @@ export const FighterState = {
     SPECIAL_1: 'special-1',
     SPECIAL_2: 'special-2',
     SPECIAL_3: 'special-3',
+    WIN: 'win',
+    LOSE: 'lose',
 };
 
 export const PushBox = {
@@ -84,6 +86,7 @@ export const FrameDelay = {
 export const FighterId = {
     Ryu: 'Ryu',
     Ken: 'Ken',
+    Player: 'Player',
 };
 
 export const FighterAttackStrength = {

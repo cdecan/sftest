@@ -43,7 +43,7 @@ export const controls = [
             [Control.UP]: 'ArrowUp',
             [Control.DOWN]: 'ArrowDown',
             [Control.LEFT]: 'ArrowLeft',
-            [Control.RIGHT]: 'KeyH',//'ArrowRight',
+            [Control.RIGHT]: 'ArrowRight',//'KeyH',//'ArrowRight',
             [Control.LIGHT_ATTACK]: 'Numpad1',
             [Control.MEDIUM_ATTACK]: 'Numpad2',
             [Control.HEAVY_ATTACK]: 'Numpad3',

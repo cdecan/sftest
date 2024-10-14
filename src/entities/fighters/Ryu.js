@@ -156,6 +156,19 @@ export class Ryu extends Fighter{
         ['shoryu-4', [[[244, 1652, 53, 119], [28, 195]], PushBox.JUMP, HurtBox.INVINCIBLE, [-16,-200,42,58]]],
         ['shoryu-5', [[[315, 1654, 49, 117], [28, 155]], PushBox.JUMP, HurtBox.IDLE]],
         ['shoryu-6', [[[369, 1667, 59, 105], [28, 105]], PushBox.IDLE, HurtBox.IDLE]],
+
+        //win
+        ['win-1', [[[364, 1933, 54, 84], [28, 80]], PushBox.IDLE, HurtBox.IDLE]],
+        ['win-2', [[[431, 1929, 60, 88], [28, 85]], PushBox.IDLE, HurtBox.IDLE]],
+        ['win-3', [[[502, 1920, 61, 97], [28, 90]], PushBox.IDLE, HurtBox.IDLE]],
+        ['win-4', [[[578, 1894, 55, 122], [28, 120]], PushBox.IDLE, HurtBox.IDLE]],
+
+        //lose
+        ['lose-1', [[[636, 2164, 82, 77], [28, 75]], PushBox.IDLE, HurtBox.IDLE]],
+        ['lose-2', [[[726, 2197, 102, 45], [28, 45]], PushBox.IDLE, HurtBox.IDLE]],
+        ['lose-3', [[[828, 2164, 77, 80], [28, 75]], PushBox.IDLE, HurtBox.IDLE]],
+        ['lose-4', [[[911, 2193, 120, 53], [28, 40]], PushBox.IDLE, HurtBox.IDLE]],
+        ['lose-5', [[[1039, 2216, 129, 32], [28, 30]], PushBox.IDLE, HurtBox.IDLE]],
     ]);
 
     animations = {
@@ -293,6 +306,16 @@ export class Ryu extends Fighter{
             ['shoryu-3', 4], ['shoryu-4', 10],
             ['shoryu-5', 8], ['shoryu-6', 18],
             ['shoryu-6', FrameDelay.TRANSITION],
+        ],
+        [FighterState.WIN]: [
+            ['win-1', 10], ['win-2', 10],
+            ['win-3', 10], ['win-4', 150],
+            ['win-4', FrameDelay.TRANSITION],
+        ],
+        [FighterState.LOSE]: [
+            ['lose-1', 10], ['lose-2', 10],
+            ['lose-3', 10], ['lose-4', 15],
+            ['lose-5', 9999],
         ],
     };
 

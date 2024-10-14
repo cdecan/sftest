@@ -2,13 +2,14 @@ import { STAGE_PADDING, STAGE_MID_POINT } from "../constants/stage.js";
 import { KenStage } from "../entities/stage/KenStage.js";
 import { StatusBar } from "../entities/overlays/StatusBar.js";
 import { Camera } from "../engine/Camera.js";
-import { Ryu } from "../entities/fighters/index.js";
+import { Ryu, Player } from "../entities/fighters/index.js";
 import { gameState } from "../state/gameState.js";
-import { FIGHTER_HURT_DELAY, FighterAttackBaseData, FighterAttackStrength, FighterId } from "../constants/fighter.js";
+import { FIGHTER_HURT_DELAY, FighterAttackBaseData, FighterAttackStrength, FighterId, FighterState } from "../constants/fighter.js";
 import { LighHitSplash, MediumHitSplash, HeavyHitSplash, Shadow } from "../entities/fighters/shared/index.js";
 import { FRAME_TIME } from "../constants/game.js";
 import { EntityList } from "../engine/EntityList.js";
 import { pollControl } from "../engine/controlHistory.js";
+import { SceneTypes } from "../constants/scenes.js";
 
 
 export class BattleScene{
@@ -19,7 +20,8 @@ export class BattleScene{
     hurtTimer = undefined;
     
     
-    constructor(){
+    constructor(SFGame){
+        this.SFGame = SFGame;
         this.stage = new KenStage();
         this.entities = new EntityList();
 
@@ -73,6 +75,8 @@ export class BattleScene{
                 return Ryu;
             case FighterId.Ken:
                 return Ken;
+            case FighterId.Player:
+                return Player;
             default:
                 throw new Error('Unimplemented fighter entity request')
         }
@@ -89,6 +93,14 @@ export class BattleScene{
         fighterEntities[0].opponent = fighterEntities[1];
         fighterEntities[1].opponent = fighterEntities[0];
         return fighterEntities;
+    }
+
+    getOppositeIndex(index){
+        if(index == 0){
+            return 1;
+        } else {
+            return 0;
+        }
     }
 
     updateFighters(time, context){
@@ -118,6 +130,20 @@ export class BattleScene{
         }
     }
 
+    updateGameOver(time){
+        for(const index in this.overlays[0].healthBars){
+            if(this.overlays[0].healthBars[index].hitPoints === 0){
+                const winner = this.getOppositeIndex(index);
+                if(!this.fighters[winner].winStart) this.fighters[winner].handleWin(time);
+                if(this.fighters[winner].winStop){
+                    this.fighters[winner].winStart = false;
+                    this.fighters[winner].winStop = false;
+                    this.SFGame.changeScene(SceneTypes.MOVE_SELECT, winner, this.fighters);
+                }
+            }
+        }
+    }
+
     update(time, context){
         this.updateFighters(time, context);
         this.updateShadows(time, context);
@@ -125,6 +151,7 @@ export class BattleScene{
         this.entities.update(time, context, this.camera);
         this.updateOverlays(time, context);
         this.camera.update(time, context);
+        this.updateGameOver(time);
     }
 
     drawFighters(context){
@@ -150,7 +177,6 @@ export class BattleScene{
         this.drawFighters(context);
         this.entities.draw(context, this.camera);
         this.stage.drawForeground(context, this.camera);
-        this.drawOverlays(context);
-        
+        this.drawOverlays(context); 
     }
 }

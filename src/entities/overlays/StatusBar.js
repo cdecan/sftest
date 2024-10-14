@@ -51,6 +51,7 @@ export class StatusBar {
 
         ['tag-ryu', [16, 56, 30, 9]],
         ['tag-ken', [128, 56, 30, 9]],
+        ['tag-player', [16, 56, 30, 9]],
 
         //Numeric
         ['score-0', [17, 101, 10, 10]],

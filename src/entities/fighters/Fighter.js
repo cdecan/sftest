@@ -17,6 +17,8 @@ export class Fighter {
     
     currentState = FighterState.IDLE;
     opponent = undefined;
+    winStart = false;
+    winStop = false;
 
     hasHit = false;
     hurtBy = undefined;
@@ -260,6 +262,16 @@ export class Fighter {
         [FighterState.BLOCKING]: {
             init: this.handleBlockInit.bind(this),
             update: this.handleBlockState.bind(this),
+            validFrom: hurtStateValidFrom,
+        },
+        [FighterState.WIN]: {
+            init: this.handleIdleInit.bind(this),
+            update: () => {},
+            validFrom: hurtStateValidFrom,
+        },
+        [FighterState.LOSE]: {
+            init: this.handleIdleInit.bind(this),
+            update: () => {},
             validFrom: hurtStateValidFrom,
         },
     }
@@ -637,6 +649,20 @@ export class Fighter {
         this.changeState(FighterState.IDLE, time);
     }
 
+    handleWin(time){
+        this.resetVelocities();
+        this.changeState(FighterState.WIN, time);
+        this.opponent.changeState(FighterState.LOSE, time)
+        this.winStart = true;
+    }
+
+    updateWin(time){
+        if(!this.isAnimationCompleted()) return;
+        this.changeState(FighterState.IDLE, time);
+        this.winStart = false;
+        this.winStop = true;
+    }
+
     handleAttackHit(attackStrength, attackType, hitPosition, hitLocation, hurtBy, time){
         const {velocity, friction} = FighterAttackBaseData[attackStrength].slide;
         
@@ -821,6 +847,7 @@ export class Fighter {
         this.updateAnimation(time);
         this.updateStageConstraints(time, context, camera);
         this.updateAttackBoxCollided(time);
+        if(this.winStart) this.updateWin(time);
     }
 
     draw(context, camera){
