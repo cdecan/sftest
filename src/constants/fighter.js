@@ -13,6 +13,7 @@ export const FighterAttackType = {
   STAND: 'stand',  
   CROUCH: 'crouch',
   OVERHEAD: 'overhead',
+  COMBO: 'combo',
 };
 
 export const FighterState = {
@@ -95,6 +96,7 @@ export const FighterAttackStrength = {
     LIGHT: 'light',
     MEDIUM: 'medium',
     HEAVY: 'heavy',
+    LAUNCHER: 'launcher',
 };
 
 export const FighterHurtBy = {
@@ -127,11 +129,21 @@ export const FighterAttackBaseData = {
             friction: 800,
         },
     },
+    [FighterAttackStrength.LAUNCHER]: {
+        //score:
+        damage: 12,
+        slide: {
+            velocity: -12 * FRAME_TIME,
+            friction: 600,
+        },
+        launch: -500,
+    },
 };
 
 export const hurtStateValidFrom = [
     FighterState.IDLE, FighterState.WALK_BACKWARD, FighterState.WALK_FORWARD,
     FighterState.JUMP_LAND, FighterState.JUMP_START, FighterState.IDLE_TURN,
+    FighterState.JUMP_FORWARD, FighterState.JUMP_BACKWARD, FighterState.JUMP_UP, 
     FighterState.LIGHT_ATTACK, FighterState.MEDIUM_ATTACK, FighterState.HEAVY_ATTACK,
     FighterState.CROUCHING_LIGHT_ATTACK, FighterState.CROUCHING_MEDIUM_ATTACK, FighterState.CROUCHING_HEAVY_ATTACK,
     FighterState.JUMPING_LIGHT_ATTACK, FighterState.JUMPING_MEDIUM_ATTACK, FighterState.JUMPING_HEAVY_ATTACK,

@@ -1,7 +1,6 @@
-import { FighterState, FrameDelay, HurtBox, PushBox } from "../../constants/fighter.js";
+import { FighterState } from "../../constants/fighter.js";
 import { DEBUG_drawDebug } from "../../utils/fighterDebug.js";
-import { Cammy } from "./Cammy.js";
-import { Ryu } from "./index.js";
+import { ChunLi, Ryu } from "./index.js";
 
 export class Player extends Ryu{
 
@@ -13,6 +12,8 @@ export class Player extends Ryu{
 
     constructor(playerId, onAttackHit, onAttackBlocked, entityList){
         super(playerId, onAttackHit, onAttackBlocked, entityList);
+
+        this.changeSpecial(3, FighterState.SPECIAL_3, new ChunLi());
     }
 
     changeSpecial(specialNumber, specialMoveID, specialMoveChar){
@@ -26,7 +27,6 @@ export class Player extends Ryu{
             this.images[specialMoveChar.image.alt] = specialMoveChar.image;
         }
 
-        //this.currentImage = this.images[specialMoveChar.image.alt];
 
         this.frames = new Map([...this.frames, ...specialMoveChar.frames]);
 

@@ -287,6 +287,7 @@ export class Fighter {
         [FighterAttackStrength.LIGHT]: document.querySelector('audio#sound-fighter-light-punch-hit'),
         [FighterAttackStrength.MEDIUM]: document.querySelector('audio#sound-fighter-medium-punch-hit'),
         [FighterAttackStrength.HEAVY]: document.querySelector('audio#sound-fighter-heavy-kick-hit'),
+        [FighterAttackStrength.LAUNCHER]: document.querySelector('audio#sound-fighter-light-punch-hit'),
     };
 
     soundLand = document.querySelector('audio#sound-fighter-land');
@@ -317,6 +318,10 @@ export class Fighter {
 
     resetVelocities(){
         this.velocity = {x: 0, y: 0};
+    }
+
+    invertVelocities(){
+        this.velocity = {x: -this.velocity.x, y: this.velocity.y};
     }
 
     resetSlide(transfer=false){
@@ -448,10 +453,19 @@ export class Fighter {
         this.handleMoveInit();
     }
 
-    handleJumpState(time) {
-        this.velocity.y += this.gravity * time.delta;
+    updateY(time){
+        if(this.position.y == STAGE_FLOOR) return;
+        if(this.position.y < STAGE_FLOOR){
+            this.velocity.y += this.gravity * time.delta;
+        }
         if(this.position.y > STAGE_FLOOR){
             this.position.y = STAGE_FLOOR;
+            this.velocity.y = 0;
+        }
+    }
+
+    handleJumpState(time) {
+        if(this.position.y == STAGE_FLOOR){
             this.changeState(FighterState.JUMP_LAND, time);
         }
 
@@ -624,7 +638,7 @@ export class Fighter {
     }
 
     handleHurtInit(time){
-        this.resetVelocities();
+        if(this.position.y < STAGE_FLOOR) this.invertVelocities();
         this.hurtShake = 2;
         this.hurtShakeTimer = time.previous + FRAME_TIME;
     }
@@ -634,7 +648,7 @@ export class Fighter {
         this.hurtShake = 0;
         this.hurtShakeTimer = 0;
         this.hurtBy = undefined;
-        this.changeState(FighterState.IDLE, time);
+        if(this.position.y == STAGE_FLOOR) this.changeState(FighterState.IDLE, time);
     }
 
     handleBlockInit(time){
@@ -665,6 +679,16 @@ export class Fighter {
     }
 
     handleAttackHit(attackStrength, attackType, hitPosition, hitLocation, hurtBy, time){
+
+        if(attackStrength === FighterAttackStrength.LAUNCHER){
+            this.velocity.y = FighterAttackBaseData[attackStrength].launch;
+            attackStrength = FighterAttackStrength.LIGHT;
+        }
+
+        if(attackType === FighterAttackType.COMBO){
+            attackType = FighterAttackType.STAND;
+        }
+
         const {velocity, friction} = FighterAttackBaseData[attackStrength].slide;
         
         this.hurtBy = hurtBy;
@@ -803,8 +827,11 @@ export class Fighter {
             hitPos.x -= 4 - Math.random() * 8;
             hitPos.y -= 4 - Math.random() * 8;
             
-
-            this.hasHit = true;
+            if(attackType !== FighterAttackType.COMBO){
+                this.hasHit = true;
+            } else {
+                this.boxes.hit = {x:0,y:0,width:0,height:0};
+            }
             this.opponent.handleAttackHit(attackStrength, attackType, hitPos, hurtLocation, FighterHurtBy.FIGHTER, time);
             return;
         }
@@ -831,6 +858,7 @@ export class Fighter {
     updatePosition(time){
         this.position.x += ((this.velocity.x + this.slideVelocity) * this.direction) * time.delta;
         this.position.y += this.velocity.y * time.delta;
+        this.updateY(time);
     }
 
     updateSpecialMoves(time){

@@ -47,8 +47,6 @@ export class Cammy extends Fighter{
     }
 
 
-
-
     handleCannonDrillInit(_, __){
         this.currentImage = this.images['cammy'];
         this.resetVelocities();

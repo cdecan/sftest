@@ -3,9 +3,8 @@ import { drawFrame } from "../utils/context.js";
 import * as control from "../engine/InputHandler.js";
 import { SceneTypes } from "../constants/scenes.js";
 import { Control } from "../constants/control.js";
-import { Ryu } from "../entities/fighters/Ryu.js";
+import { Ryu, Cammy, ChunLi } from "../entities/fighters/index.js";
 import { FighterState } from "../constants/fighter.js";
-import { Cammy } from "../entities/fighters/Cammy.js";
 
 export class MoveSelectScene {
     fighters = [];
@@ -17,6 +16,7 @@ export class MoveSelectScene {
     potentialSpecials = {
         'ryu': [FighterState.SPECIAL_1, FighterState.SPECIAL_2, FighterState.SPECIAL_3],
         'cammy': [FighterState.SPECIAL_1],
+        'chunli': [FighterState.SPECIAL_3],
     };
 
     frames = new Map([
@@ -206,6 +206,8 @@ export class MoveSelectScene {
                 return new Ryu();
             case 'cammy':
                 return new Cammy();
+            case 'chunli':
+                return new ChunLi();
             default:
                 throw new Error('Unimplemented fighter entity request')
         }
