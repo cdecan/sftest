@@ -16,7 +16,7 @@ export class MoveSelectScene {
     potentialSpecials = {
         'ryu': [FighterState.SPECIAL_1, FighterState.SPECIAL_2, FighterState.SPECIAL_3],
         'cammy': [FighterState.SPECIAL_1],
-        'chunli': [FighterState.SPECIAL_3],
+        'chunli': [FighterState.SPECIAL_1, FighterState.SPECIAL_2, FighterState.SPECIAL_3],
     };
 
     frames = new Map([

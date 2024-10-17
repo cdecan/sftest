@@ -13,7 +13,7 @@ export class Player extends Ryu{
     constructor(playerId, onAttackHit, onAttackBlocked, entityList){
         super(playerId, onAttackHit, onAttackBlocked, entityList);
 
-        this.changeSpecial(3, FighterState.SPECIAL_3, new ChunLi());
+        //this.changeSpecial(1, FighterState.SPECIAL_1, new ChunLi());
     }
 
     changeSpecial(specialNumber, specialMoveID, specialMoveChar){
