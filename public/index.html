@@ -1,0 +1,98 @@
+<<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Rogue Fighter</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="">
+        <style>
+            html,
+            body{
+                padding: 0;
+                margin: 0;
+                height: 100%;
+            }
+            body {
+                display: flex;
+            }
+            body,
+            canvas {
+                background-color: black;
+            }
+            canvas {
+                width: 100%;
+                object-fit: contain;
+                image-rendering: crisp-edges;
+                image-rendering: pixelated;
+            }
+            img {
+                display: none;
+            }
+        </style>
+        <script type="module" src="./src/index.js"></script>
+    </head>
+    <body>
+        <canvas></canvas>
+        <img src="./images/ken.png" alt="ken">
+        <img src="./images/ryu.png" alt="ryu">
+        <img src="./images/cammy.png" alt="cammy">
+        <img src="./images/chunli.png" alt="chunli">
+        <img src="./images/ken-stage.png" alt="stage">
+        <img src="./images/misc.png" alt="misc">
+        <img src="./images/decals.png" alt="decals">
+        <img src="./images/shadow.png" alt="shadow">
+        <img src="./images/titleScreen.png" alt="titleScreen">
+        <img src="./images/moveSelect.png" alt="moveSelector">
+        <img src="./images/arrow.png" alt="arrow">
+
+        <audio
+            id="theme-ken"
+            src="./sounds/theme-ken-1.cps1.ogg"
+            preload="auto"
+            loop>
+        </audio>
+
+        <audio
+            id="sound-fighter-land"
+            src="./sounds/land.ogg"
+            preload="auto">
+        </audio>
+        <audio
+            id="sound-fighter-light-attack"
+            src="./sounds/light-attack.ogg"
+            preload="auto">
+        </audio>
+        <audio
+            id="sound-fighter-light-punch-hit"
+            src="./sounds/light-punch-hit.ogg"
+            preload="auto">
+        </audio>
+        <audio
+            id="sound-fighter-medium-attack"
+            src="./sounds/medium-attack.ogg"
+            preload="auto">
+        </audio>
+        <audio
+            id="sound-fighter-medium-punch-hit"
+            src="./sounds/medium-punch-hit.ogg"
+            preload="auto">
+        </audio>
+        <audio
+            id="sound-fighter-heavy-attack"
+            src="./sounds/heavy-attack.ogg"
+            preload="auto">
+        </audio>
+        <audio
+            id="sound-fighter-heavy-kick-hit"
+            src="./sounds/heavy-kick-hit.ogg"
+            preload="auto">
+        </audio>
+
+        <audio
+            id="sound-voice-hadouken"
+            src="./sounds/voice-hadouken.ogg"
+            preload="auto">
+        </audio>
+        
+    </body>
+</html>
