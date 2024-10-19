@@ -7,16 +7,19 @@ import { gameState } from "./state/gameState.js";
 import { createDefaultFighterState } from "./state/fighterState.js";
 import { FighterId } from "./constants/fighter.js";
 import { HEALTH_MAX_HP } from "./constants/battle.js";
+import { GameInitScene } from "./scenes/GameInitScene.js";
+import { MatchMaker } from "./scenes/MatchMaker.js";
 
 export class StreetFighterGame {
     context = getContext();
 
-    constructor(){
+    constructor(socket){
+        this.socket = socket
         this.frameTime = {
             previous: 0,
             delta:0,
         }
-        this.scene = new BattleScene(this);//new MoveSelectScene([], 0, this);//new BattleScene();
+        this.scene = new GameInitScene(this, this.socket)//new BattleScene(this);//new MoveSelectScene([], 0, this);//new BattleScene();
     }
 
         
@@ -34,13 +37,15 @@ export class StreetFighterGame {
         this.scene.draw(this.context);
     }
 
+
+
     start(){
         registerKeyboardEvents();
         registerGamepadEvents();
         window.requestAnimationFrame(this.frame.bind(this));
     }
 
-    changeScene(scene, winningID=0, fighters=[]){
+    changeScene(scene, winningID=0, fighters=[], player=undefined){
         switch (scene) {
             case SceneTypes.FIGHTING_GAME:
                 this.resetFighters(fighters, winningID);
@@ -50,6 +55,7 @@ export class StreetFighterGame {
                 this.scene = new MoveSelectScene(fighters, winningID, this);
                 break;
             default:
+                this.scene = new MatchMaker(this, this.socket);
                 break;
         }
     }
@@ -71,4 +77,8 @@ export class StreetFighterGame {
             fighter.reset(fighter.playerId);
         }
     }
+
+    
 }
+
+export function test(){}
