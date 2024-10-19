@@ -9,9 +9,11 @@ import { FighterId } from "./constants/fighter.js";
 import { HEALTH_MAX_HP } from "./constants/battle.js";
 import { GameInitScene } from "./scenes/GameInitScene.js";
 import { MatchMaker } from "./scenes/MatchMaker.js";
+import { EntityList } from "./engine/EntityList.js";
 
 export class StreetFighterGame {
     context = getContext();
+    entityList = new EntityList();
 
     constructor(socket){
         this.socket = socket

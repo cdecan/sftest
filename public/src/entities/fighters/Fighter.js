@@ -876,31 +876,6 @@ export class Fighter {
         }
     }
 
-    sendToBackend(){
-        if(this.playerId == frontendPlayers[this.mySocketId].playerId){
-            var data = {
-                currentState: this.currentState,
-                animationFrame: this.animationFrame,
-                animationTimer: this.animationTimer,
-                position: this.position,
-                velocity: this.velocity,
-                hasHit: this.hasHit,
-                hurtBy: this.hurtBy,
-                hurtShake: this.hurtShake,
-                hurtShakeTimer: this.hurtShakeTimer,
-                slideVelocity: this.slideVelocity,
-                slideFriction: this.slideFriction,
-                boxes: this.boxes,
-                //states: this.states,
-                frames: JSON.stringify(this.frames, replacer),
-                animations: this.animations,
-                gravity: this.gravity,
-            }
-            //console.log(data.frames);
-            socket.emit("sendPlayerData", data)
-        }
-    }
-
     update(time, context, camera){
         this.updateSpecialMoves(time);
         this.updatePosition(time);
@@ -910,7 +885,6 @@ export class Fighter {
         this.updateStageConstraints(time, context, camera);
         this.updateAttackBoxCollided(time);
         if(this.winStart) this.updateWin(time);
-        this.sendToBackend()
     }
 
     draw(context, camera){

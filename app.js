@@ -64,6 +64,10 @@ io.on('connection', (socket) => {
             gravity: 0,
 
 
+        },
+        fighterSceneData: {
+            fighterDrawOrder: [0,1],
+            hurtTimer: undefined,
         }
     }
 
@@ -96,10 +100,7 @@ io.on('connection', (socket) => {
 
     socket.on('playerinit', (newPlayer) => {
         players[socket.id].fighter = newPlayer
-        // players[socket.id].fighterData = {
-
-        // }
-        //players[socket.id].FighterData[]
+        players[socket.id].hitPoints = HEALTH_MAX_HP
 
     })
 
@@ -123,25 +124,32 @@ io.on('connection', (socket) => {
         players[id].fighterData.currentState = newState;
     })
 
-    socket.on('sendPlayerData', (fighter) => {
-        players[socket.id].fighterData.currentState = fighter.currentState;
-        players[socket.id].fighterData.position = fighter.position;
-        players[socket.id].fighterData.velocity = fighter.velocity;
-        players[socket.id].fighterData.animationFrame = fighter.animationFrame;
-        players[socket.id].fighterData.animationTimer = fighter.animationTimer;
-        players[socket.id].fighterData.hasHit = fighter.hasHit;
-        players[socket.id].fighterData.hurtBy = fighter.hurtBy;
-        players[socket.id].fighterData.hurtShake = fighter.hurtShake;
-        players[socket.id].fighterData.hurtShakeTimer = fighter.hurtShakeTimer;
-        players[socket.id].fighterData.slideVelocity = fighter.slideVelocity;
-        players[socket.id].fighterData.slideFriction = fighter.slideFriction;
-        players[socket.id].fighterData.boxes = fighter.boxes;
-        players[socket.id].fighterData.states = fighter.states;
-        players[socket.id].fighterData.frames = fighter.frames;
-        players[socket.id].fighterData.animations = fighter.animations;
-        players[socket.id].fighterData.gravity = fighter.gravity;
+    socket.on('sendPlayerData', (data) => {
+        players[socket.id].fighterData.currentState = data.currentState;
+        players[socket.id].fighterData.position = data.position;
+        players[socket.id].fighterData.velocity = data.velocity;
+        players[socket.id].fighterData.animationFrame = data.animationFrame;
+        players[socket.id].fighterData.animationTimer = data.animationTimer;
+        players[socket.id].fighterData.hasHit = data.hasHit;
+        players[socket.id].fighterData.hurtBy = data.hurtBy;
+        players[socket.id].fighterData.hurtShake = data.hurtShake;
+        players[socket.id].fighterData.hurtShakeTimer = data.hurtShakeTimer;
+        players[socket.id].fighterData.slideVelocity = data.slideVelocity;
+        players[socket.id].fighterData.slideFriction = data.slideFriction;
+        players[socket.id].fighterData.boxes = data.boxes;
+        // players[socket.id].fighterData.states = data.states;
+        // players[socket.id].fighterData.frames = data.frames;
+        // players[socket.id].fighterData.animations = data.animations;
+        players[socket.id].fighterData.gravity = data.gravity;
+        players[socket.id].fighterSceneData.fighterDrawOrder = data.fighterDrawOrder;
+        players[socket.id].fighterSceneData.hurtTimer = data.hurtTimer;
 
     })
+
+    socket.on('dealDamage', (damage) => {
+        players[socket.id].hitPoints -= damage;
+    })
+
 })
 
 setInterval(() =>{

@@ -20,7 +20,8 @@ socket.on('updatePlayers', (backendPlayers) => {
                 fighter: backendPlayer.fighter,
                 score: backendPlayer.score,
                 name: backendPlayer.name,
-                fighterData: backendPlayer.fighterData
+                fighterData: backendPlayer.fighterData,
+                hitPoints: backendPlayer.hitPoints
             }
         } else {
             //if player already exists
@@ -29,6 +30,7 @@ socket.on('updatePlayers', (backendPlayers) => {
             frontendPlayers[id].name = backendPlayer.name;
             frontendPlayers[id].score = backendPlayer.score;
             frontendPlayers[id].fighterData = backendPlayer.fighterData;
+            frontendPlayers[id].hitPoints = backendPlayer.hitPoints;
         }
     }
 

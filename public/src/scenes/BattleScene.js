@@ -11,7 +11,7 @@ import { EntityList } from "../engine/EntityList.js";
 import { pollControl } from "../engine/controlHistory.js";
 import { SceneTypes } from "../constants/scenes.js";
 import { frontendPlayers, socket } from "../index.js";
-import { reviver } from "../utils/mapStringify.js";
+import { replacer, reviver } from "../utils/mapStringify.js";
 
 
 export class BattleScene{
@@ -53,10 +53,12 @@ export class BattleScene{
 
     handleAttackHit(time, playerId, opponentId, position, strength) {
         gameState.fighters[opponentId].hitPoints -= FighterAttackBaseData[strength].damage;
-        
+        socket.emit('dealDamage', FighterAttackBaseData[strength].damage);
         
         this.hurtTimer = time.previous + (FIGHTER_HURT_DELAY * FRAME_TIME);
         this.fighterDrawOrder = [opponentId, playerId];
+        //socket.emit('sendDrawOrder', this.fighterDrawOrder)
+        
         if(!position) return;
 
         this.entities.add(this.getHitSplashClass(strength), time, position.x, position.y, playerId);
@@ -125,10 +127,12 @@ export class BattleScene{
             }else{
                 if(fighter.mySocketId == socket.id){
                     fighter.update(time, context, this.camera);
+                    this.sendToBackend(fighter)
                 }
             }
         }
         for (const fighter of this.fighters) {
+            gameState.fighters[this.getOppositeIndex(frontendPlayers[fighter.mySocketId].playerId)].hitPoints = frontendPlayers[fighter.mySocketId].hitPoints;
             if(fighter.mySocketId != socket.id){
                 this.getFromBackend(fighter)
             }
@@ -149,9 +153,37 @@ export class BattleScene{
         fighter.slideFriction = frontendPlayers[fighter.mySocketId].fighterData.slideFriction;
         fighter.boxes = frontendPlayers[fighter.mySocketId].fighterData.boxes;
         //fighter.states = frontendPlayers[fighter.mySocketId].fighterData.states;
-        fighter.frames = JSON.parse(frontendPlayers[fighter.mySocketId].fighterData.frames, reviver);
-        fighter.animations = frontendPlayers[fighter.mySocketId].fighterData.animations;
+        // fighter.frames = JSON.parse(frontendPlayers[fighter.mySocketId].fighterData.frames, reviver);
+        // fighter.animations = frontendPlayers[fighter.mySocketId].fighterData.animations;
         fighter.gravity = frontendPlayers[fighter.mySocketId].fighterData.gravity;
+
+    }
+
+    sendToBackend(fighter){
+        if(fighter.playerId == frontendPlayers[fighter.mySocketId].playerId){
+            var data = {
+                currentState: fighter.currentState,
+                animationFrame: fighter.animationFrame,
+                animationTimer: fighter.animationTimer,
+                position: fighter.position,
+                velocity: fighter.velocity,
+                hasHit: fighter.hasHit,
+                hurtBy: fighter.hurtBy,
+                hurtShake: fighter.hurtShake,
+                hurtShakeTimer: fighter.hurtShakeTimer,
+                slideVelocity: fighter.slideVelocity,
+                slideFriction: fighter.slideFriction,
+                boxes: fighter.boxes,
+                //states: this.states,
+                // frames: JSON.stringify(fighter.frames, replacer),
+                // animations: fighter.animations,
+                gravity: fighter.gravity,
+                hurtTimer: this.hurtTimer,
+                fighterDrawOrder: this.fighterDrawOrder
+            }
+            //console.log(data.frames);
+            socket.emit("sendPlayerData", data)
+        }
     }
 
     updateShadows(time, context){
@@ -198,6 +230,7 @@ export class BattleScene{
         this.updateOverlays(time, context);
         this.camera.update(time, context);
         this.updateGameOver(time);
+
     }
 
     drawFighters(context){
