@@ -33,7 +33,7 @@ export class StreetFighterGame {
         }
             
         pollGamepads();
-        this.scene.update(this.frameTime, this.context);
+        this.scene.update(this.frameTime, this.context, this.socket);
         this.scene.draw(this.context);
     }
 
@@ -48,7 +48,7 @@ export class StreetFighterGame {
     changeScene(scene, winningID=0, fighters=[], player=undefined){
         switch (scene) {
             case SceneTypes.FIGHTING_GAME:
-                this.resetFighters(fighters, winningID);
+                //this.resetFighters(fighters, winningID);
                 this.scene = new BattleScene(this, fighters);
                 break;
             case SceneTypes.MOVE_SELECT:
@@ -61,6 +61,7 @@ export class StreetFighterGame {
     }
 
     resetFighters(fighters, winningID){
+        console.log(fighters);
         gameState.fighters[fighters[0].playerId] = {
             battles: gameState.fighters[fighters[0].playerId].battles + 1,
             hitPoints: HEALTH_MAX_HP,

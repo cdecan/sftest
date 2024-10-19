@@ -1,11 +1,16 @@
 import { Control, GamepadThumbstick } from "../constants/control.js";
 import { controls } from "../config/controls.js";
 import { FighterDirection } from "../constants/fighter.js";
+import { frontendPlayers, socket } from "../index.js";
 
 const heldKeys = new Set();
 const pressedKeys = new Set();
 const gamePads = new Map();
 const pressedButtons = new Set();
+
+function isCorrectFighter(id){
+    return id == frontendPlayers[socket.id].playerId
+}
 
 const mappedKeys = controls.map(({keyboard}) => Object.values(keyboard)).flat();
 
@@ -101,40 +106,58 @@ export const isControlDown = (id, control) => isKeyDown(controls[id].keyboard[co
 export const isControlPressed = (id, control) => isKeyPressed(controls[id].keyboard[control])
                                                 || isButtonPressed(id, controls[id].gamepad[control]);
 
-export const isLeft = (id) => isKeyDown(controls[id].keyboard[Control.LEFT])
-    || isButtonDown(id, controls[id].gamepad[Control.LEFT])
-    || isAxeLower(id,
-    controls[id].gamepad[GamepadThumbstick.HORIZONTAL_AXE_ID],
-    -controls[id].gamepad[GamepadThumbstick.DEAD_ZONE],
+export const isLeft = (id) => 
+    isCorrectFighter(id) && (
+        isKeyDown(controls[id].keyboard[Control.LEFT])
+        || isButtonDown(id, controls[id].gamepad[Control.LEFT])
+        || isAxeLower(id,
+        controls[id].gamepad[GamepadThumbstick.HORIZONTAL_AXE_ID],
+        -controls[id].gamepad[GamepadThumbstick.DEAD_ZONE],
+
+    )
 );
-export const isRight = (id) => isKeyDown(controls[id].keyboard[Control.RIGHT])
+export const isRight = (id) => 
+    isCorrectFighter(id) &&(
+
+    
+    isKeyDown(controls[id].keyboard[Control.RIGHT])
     || isButtonDown(id, controls[id].gamepad[Control.RIGHT])
     || isAxeGreater(id,
     controls[id].gamepad[GamepadThumbstick.HORIZONTAL_AXE_ID],
     controls[id].gamepad[GamepadThumbstick.DEAD_ZONE],
-);
+));
 
-export const isUp = (id) => isKeyDown(controls[id].keyboard[Control.UP])
-    || isButtonDown(id, controls[id].gamepad[Control.UP])
-    || isAxeLower(id,
-    controls[id].gamepad[GamepadThumbstick.VERTICAL_AXE_ID],
-    -controls[id].gamepad[GamepadThumbstick.DEAD_ZONE],
+export const isUp = (id) => 
+    isCorrectFighter(id) && (
+        isKeyDown(controls[id].keyboard[Control.UP])
+        || isButtonDown(id, controls[id].gamepad[Control.UP])
+        || isAxeLower(id,
+        controls[id].gamepad[GamepadThumbstick.VERTICAL_AXE_ID],
+        -controls[id].gamepad[GamepadThumbstick.DEAD_ZONE],
+
+    )
+    
     );
-export const isDown = (id) => isKeyDown(controls[id].keyboard[Control.DOWN])
-    || isButtonDown(id, controls[id].gamepad[Control.DOWN])
-    || isAxeGreater(id,
-    controls[id].gamepad[GamepadThumbstick.VERTICAL_AXE_ID],
-    controls[id].gamepad[GamepadThumbstick.DEAD_ZONE],
+export const isDown = (id) => 
+    isCorrectFighter(id) && (
+        isKeyDown(controls[id].keyboard[Control.DOWN])
+        || isButtonDown(id, controls[id].gamepad[Control.DOWN])
+        || isAxeGreater(id,
+        controls[id].gamepad[GamepadThumbstick.VERTICAL_AXE_ID],
+        controls[id].gamepad[GamepadThumbstick.DEAD_ZONE],
+
+    )
+    
     );
 
 export const isForward = (id,direction) => direction === FighterDirection.RIGHT ? isRight(id) : isLeft(id);
 export const isBackward = (id,direction) => direction === FighterDirection.LEFT ? isRight(id) : isLeft(id);
 
-export const isIdle = (id) => !(isLeft(id) || isRight(id) || isUp(id) || isDown(id));
+export const isIdle = (id) => isCorrectFighter(id) && ( !(isLeft(id) || isRight(id) || isUp(id) || isDown(id)));
 
-export const isLightAttack = (id) => isControlPressed(id, Control.LIGHT_ATTACK);
-export const isMediumAttack = (id) => isControlPressed(id, Control.MEDIUM_ATTACK);
-export const isHeavyAttack = (id) => isControlPressed(id, Control.HEAVY_ATTACK);
+export const isLightAttack = (id) => isCorrectFighter(id) && isControlPressed(id, Control.LIGHT_ATTACK);
+export const isMediumAttack = (id) => isCorrectFighter(id) && isControlPressed(id, Control.MEDIUM_ATTACK);
+export const isHeavyAttack = (id) => isCorrectFighter(id) && isControlPressed(id, Control.HEAVY_ATTACK);
 
 export const isAnyAttack = (id) => isLightAttack(id) || isMediumAttack(id) || isHeavyAttack(id);
 

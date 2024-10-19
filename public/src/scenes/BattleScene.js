@@ -2,14 +2,16 @@ import { STAGE_PADDING, STAGE_MID_POINT } from "../constants/stage.js";
 import { KenStage } from "../entities/stage/KenStage.js";
 import { StatusBar } from "../entities/overlays/StatusBar.js";
 import { Camera } from "../engine/Camera.js";
-import { Ryu, Player } from "../entities/fighters/index.js";
+import { Ryu, Player, Cammy, ChunLi } from "../entities/fighters/index.js";
 import { gameState } from "../state/gameState.js";
-import { FIGHTER_HURT_DELAY, FighterAttackBaseData, FighterAttackStrength, FighterId } from "../constants/fighter.js";
+import { FIGHTER_HURT_DELAY, FighterAttackBaseData, FighterAttackStrength, FighterId, FighterState } from "../constants/fighter.js";
 import { LighHitSplash, MediumHitSplash, HeavyHitSplash, Shadow } from "../entities/fighters/shared/index.js";
 import { FRAME_TIME } from "../constants/game.js";
 import { EntityList } from "../engine/EntityList.js";
 import { pollControl } from "../engine/controlHistory.js";
 import { SceneTypes } from "../constants/scenes.js";
+import { frontendPlayers, socket } from "../index.js";
+import { reviver } from "../utils/mapStringify.js";
 
 
 export class BattleScene{
@@ -20,8 +22,8 @@ export class BattleScene{
     hurtTimer = undefined;
     
     
-    constructor(SFGame, fighters=[]){
-        this.fighters = fighters;
+    constructor(SFGame, fighterData=[]){
+        this.fighterData = fighterData;
         this.SFGame = SFGame;
         this.stage = new KenStage();
         this.entities = new EntityList();
@@ -52,6 +54,7 @@ export class BattleScene{
     handleAttackHit(time, playerId, opponentId, position, strength) {
         gameState.fighters[opponentId].hitPoints -= FighterAttackBaseData[strength].damage;
         
+        
         this.hurtTimer = time.previous + (FIGHTER_HURT_DELAY * FRAME_TIME);
         this.fighterDrawOrder = [opponentId, playerId];
         if(!position) return;
@@ -65,13 +68,12 @@ export class BattleScene{
     }
 
     startRound(){
-        if(this.fighters.length == 0){
-            this.fighters = this.getFighterEntities();
-        } else {
-            for(var fighter of this.fighters){
-                fighter.setEntityList(this.entities);
-            }
+        this.fighters = this.getFighterEntities();
+        if(this.fighterData.length != 0){
+            this.setFighterSpecials(this.fighters[0], this.fighterData[0].fighter)
+            this.setFighterSpecials(this.fighters[1], this.fighterData[1].fighter)
         }
+        
         this.camera = new Camera(STAGE_MID_POINT + STAGE_PADDING - 192, 16, this.fighters);
         this.shadows = this.fighters.map(fighter => new Shadow(fighter));
     }
@@ -91,7 +93,6 @@ export class BattleScene{
 
     getFighterEntity(fighterState, index){
         const FighterEntityClass = this.getFighterEntityClass(fighterState.id);
-
         return new FighterEntityClass(index, this.handleAttackHit.bind(this), this.handleAttackBlocked.bind(this), this.entities);
     }
 
@@ -99,6 +100,10 @@ export class BattleScene{
         const fighterEntities = gameState.fighters.map(this.getFighterEntity.bind(this));
         fighterEntities[0].opponent = fighterEntities[1];
         fighterEntities[1].opponent = fighterEntities[0];
+        fighterEntities[0].setSocketId(this.fighterData[0].socketId)
+        fighterEntities[1].setSocketId(this.fighterData[1].socketId)
+        //fighterEntities[0].sendToBackend()
+        //fighterEntities[1].sendToBackend()
         return fighterEntities;
     }
 
@@ -118,9 +123,35 @@ export class BattleScene{
                 fighter.updateHurtShake(time, this.hurtTimer);
                 fighter.updateSpecialMoves(time);
             }else{
-                fighter.update(time, context, this.camera);
+                if(fighter.mySocketId == socket.id){
+                    fighter.update(time, context, this.camera);
+                }
             }
         }
+        for (const fighter of this.fighters) {
+            if(fighter.mySocketId != socket.id){
+                this.getFromBackend(fighter)
+            }
+        }
+    }
+
+    getFromBackend(fighter){
+        fighter.currentState = frontendPlayers[fighter.mySocketId].fighterData.currentState;
+        fighter.animationFrame = frontendPlayers[fighter.mySocketId].fighterData.animationFrame;
+        fighter.animationTimer = frontendPlayers[fighter.mySocketId].fighterData.animationTimer;
+        fighter.position = frontendPlayers[fighter.mySocketId].fighterData.position;
+        fighter.velocity = frontendPlayers[fighter.mySocketId].fighterData.velocity;
+        fighter.hasHit = frontendPlayers[fighter.mySocketId].fighterData.hasHit;
+        fighter.hurtBy = frontendPlayers[fighter.mySocketId].fighterData.hurtBy;
+        fighter.hurtShake = frontendPlayers[fighter.mySocketId].fighterData.hurtShake;
+        fighter.hurtShakeTimer = frontendPlayers[fighter.mySocketId].fighterData.hurtShakeTimer;
+        fighter.slideVelocity = frontendPlayers[fighter.mySocketId].fighterData.slideVelocity;
+        fighter.slideFriction = frontendPlayers[fighter.mySocketId].fighterData.slideFriction;
+        fighter.boxes = frontendPlayers[fighter.mySocketId].fighterData.boxes;
+        //fighter.states = frontendPlayers[fighter.mySocketId].fighterData.states;
+        fighter.frames = JSON.parse(frontendPlayers[fighter.mySocketId].fighterData.frames, reviver);
+        fighter.animations = frontendPlayers[fighter.mySocketId].fighterData.animations;
+        fighter.gravity = frontendPlayers[fighter.mySocketId].fighterData.gravity;
     }
 
     updateShadows(time, context){
@@ -159,8 +190,8 @@ export class BattleScene{
         }
     }
 
-    update(time, context){
-        this.updateFighters(time, context);
+    update(time, context, socket){
+        this.updateFighters(time, context, socket);
         this.updateShadows(time, context);
         this.stage.update(time);
         this.entities.update(time, context, this.camera);
@@ -193,5 +224,24 @@ export class BattleScene{
         this.entities.draw(context, this.camera);
         this.stage.drawForeground(context, this.camera);
         this.drawOverlays(context); 
+    }
+
+    setFighterSpecials(fighter, specials){
+        fighter.changeSpecial(1, FighterState.SPECIAL_1, this.getNewFighter(specials['special-1']))
+        fighter.changeSpecial(2, FighterState.SPECIAL_2, this.getNewFighter(specials['special-2']))
+        fighter.changeSpecial(3, FighterState.SPECIAL_3, this.getNewFighter(specials['special-3']))
+    }
+
+    getNewFighter(id){
+        switch (id) {
+            case 'ryu':
+                return new Ryu();
+            case 'cammy':
+                return new Cammy();
+            case 'chunli':
+                return new ChunLi();
+            default:
+                throw new Error('Unimplemented fighter entity request')
+        }
     }
 }

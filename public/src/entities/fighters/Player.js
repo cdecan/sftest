@@ -1,4 +1,5 @@
 import { FighterState } from "../../constants/fighter.js";
+import { frontendPlayers, socket } from "../../index.js";
 import { DEBUG_drawDebug } from "../../utils/fighterDebug.js";
 import { ChunLi, Ryu } from "./index.js";
 
@@ -62,7 +63,11 @@ export class Player extends Ryu{
 
         this.currentImage = this.images['ryu'];
         this.hasHit = false;
+
+
         this.currentState = newState;
+        //socket.emit('changeState', newState, this.mySocketId);
+        //this.currentState = frontendPlayers[this.mySocketId].fighterData.currentState;
         this.setAnimationFrame(0, time);
         this.states[this.currentState].init(time, args);
     }

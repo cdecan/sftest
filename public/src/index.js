@@ -1,10 +1,13 @@
 import { SCREEN_HEIGHT, SCREEN_WIDTH } from "./constants/game.js";
 import { drawFrame, getContext } from "./utils/context.js";
 import { StreetFighterGame } from "./StreetFighterGame.js"
+import { SceneTypes } from "./constants/scenes.js";
 
-const socket = io();
+export const socket = io();
 
 export const frontendPlayers = {};
+
+const SFGame = new StreetFighterGame(socket);
 
 socket.on('updatePlayers', (backendPlayers) => {
     for(const id in backendPlayers){
@@ -12,14 +15,20 @@ socket.on('updatePlayers', (backendPlayers) => {
 
         if(!frontendPlayers[id]) {
             frontendPlayers[id] = {
-                fighter: backendPlayer.player,
+                socketId: backendPlayer.socketId,
+                playerId: backendPlayer.playerId,
+                fighter: backendPlayer.fighter,
                 score: backendPlayer.score,
                 name: backendPlayer.name,
-                lfm: backendPlayer.lfm
+                fighterData: backendPlayer.fighterData
             }
         } else {
             //if player already exists
-            frontendPlayers[id].name = backendPlayer.name
+            frontendPlayers[id].fighter = backendPlayer.fighter;
+            frontendPlayers[id].playerId = backendPlayer.playerId;
+            frontendPlayers[id].name = backendPlayer.name;
+            frontendPlayers[id].score = backendPlayer.score;
+            frontendPlayers[id].fighterData = backendPlayer.fighterData;
         }
     }
 
@@ -32,13 +41,18 @@ socket.on('updatePlayers', (backendPlayers) => {
     //console.log(frontendPlayers)
 })
 
+socket.on('makeMatch', (playerQueue) => {
+    var fighters = [playerQueue[0], playerQueue[1]]
+    SFGame.changeScene(SceneTypes.FIGHTING_GAME, 0, fighters)
+})
+
 window.addEventListener('load', function() {
     const context = getContext();
     const image = document.querySelector('img[alt=titleScreen]');;
     drawFrame(context, image, [0,0,SCREEN_WIDTH,SCREEN_HEIGHT], 0, 0);
 
     window.addEventListener('click', function(){
-        new StreetFighterGame(socket).start();
+        SFGame.start();
     }, {once: true});
     
 });

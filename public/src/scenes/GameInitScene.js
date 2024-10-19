@@ -1,10 +1,8 @@
 import { Control } from "../constants/control.js";
+import { FighterId, FighterState } from "../constants/fighter.js";
 import { SCREEN_HEIGHT, SCREEN_WIDTH } from "../constants/game.js";
-import { SceneTypes } from "../constants/scenes.js";
 import * as control from "../engine/InputHandler.js";
-import { Player } from "../entities/fighters/Player.js";
 import { frontendPlayers } from "../index.js";
-import { drawFrame } from "../utils/context.js";
 
 export class GameInitScene {
 
@@ -89,8 +87,7 @@ export class GameInitScene {
             var name = this.letters[this.currentLetters[0]] + this.letters[this.currentLetters[1]] + this.letters[this.currentLetters[2]]
             frontendPlayers[this.socket.id].name = name;
             this.socket.emit('namechange', name);
-            var newFighter = this.makeNewFighter()
-            this.socket.emit('playerinit', newFighter)
+            this.socket.emit('playerinit', this.createPlayerInit())
             this.SFGame.changeScene("matchmaking",0,[],frontendPlayers[this.socket.id]);
 
         }
@@ -153,7 +150,11 @@ export class GameInitScene {
         }
     }
 
-    makeNewFighter(){
-        return new Player(-1, undefined, undefined, undefined);
+    createPlayerInit(){
+        return {
+            'special-1': 'ryu',
+            'special-2': 'ryu',
+            'special-3': 'ryu',
+        }
     }
 }

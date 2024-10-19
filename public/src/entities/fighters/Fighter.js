@@ -6,6 +6,8 @@ import { FRAME_TIME, SCREEN_WIDTH } from "../../constants/game.js";
 import { DEBUG_drawDebug } from "../../utils/fighterDebug.js";
 import { playSound, stopSound } from "../../engine/soundHandler.js";
 import { hasSpecialMoveBeenExecuted } from "../../engine/controlHistory.js";
+import { frontendPlayers, socket } from "../../index.js";
+import { replacer } from "../../utils/mapStringify.js";
 
 export class Fighter {
     image = new Image();
@@ -31,6 +33,8 @@ export class Fighter {
     initialVelocity = {};
     attackStruck = false;
     gravity = 0;
+
+    mySocketId = 0;
 
 
     boxes = {
@@ -311,7 +315,10 @@ export class Fighter {
             }
 
         this.hasHit = false;
-        this.currentState = newState;
+        console.log(this.currentState);
+        socket.emit('changeState', newState);
+        //this.currentState = frontendPlayers[socket.id].fighterData.currentState;
+        console.log(this.currentState);
         this.setAnimationFrame(0, time);
         this.states[this.currentState].init(time, args);
     } 
@@ -869,6 +876,31 @@ export class Fighter {
         }
     }
 
+    sendToBackend(){
+        if(this.playerId == frontendPlayers[this.mySocketId].playerId){
+            var data = {
+                currentState: this.currentState,
+                animationFrame: this.animationFrame,
+                animationTimer: this.animationTimer,
+                position: this.position,
+                velocity: this.velocity,
+                hasHit: this.hasHit,
+                hurtBy: this.hurtBy,
+                hurtShake: this.hurtShake,
+                hurtShakeTimer: this.hurtShakeTimer,
+                slideVelocity: this.slideVelocity,
+                slideFriction: this.slideFriction,
+                boxes: this.boxes,
+                //states: this.states,
+                frames: JSON.stringify(this.frames, replacer),
+                animations: this.animations,
+                gravity: this.gravity,
+            }
+            //console.log(data.frames);
+            socket.emit("sendPlayerData", data)
+        }
+    }
+
     update(time, context, camera){
         this.updateSpecialMoves(time);
         this.updatePosition(time);
@@ -878,6 +910,7 @@ export class Fighter {
         this.updateStageConstraints(time, context, camera);
         this.updateAttackBoxCollided(time);
         if(this.winStart) this.updateWin(time);
+        this.sendToBackend()
     }
 
     draw(context, camera){
@@ -927,6 +960,14 @@ export class Fighter {
         
         this.velocity = {x: 0, y: 0};
 
+    }
+
+    setSocketId(id){
+        this.mySocketId = id;
+    }
+
+    getSocketId(){
+        return this.mySocketId;
     }
 
 }

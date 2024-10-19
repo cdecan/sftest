@@ -40,13 +40,21 @@ export const controls = [
             [Control.HEAVY_ATTACK]: 4,
         },
         keyboard: {
-            [Control.UP]: 'ArrowUp',
-            [Control.DOWN]: 'ArrowDown',
-            [Control.LEFT]: 'ArrowLeft',
-            [Control.RIGHT]: 'ArrowRight',//'KeyH',//'ArrowRight',
-            [Control.LIGHT_ATTACK]: 'Numpad1',
-            [Control.MEDIUM_ATTACK]: 'Numpad2',
-            [Control.HEAVY_ATTACK]: 'Numpad3',
+            // [Control.UP]: 'ArrowUp',
+            // [Control.DOWN]: 'ArrowDown',
+            // [Control.LEFT]: 'ArrowLeft',
+            // [Control.RIGHT]: 'ArrowRight',//'KeyH',//'ArrowRight',
+            // [Control.LIGHT_ATTACK]: 'Numpad1',
+            // [Control.MEDIUM_ATTACK]: 'Numpad2',
+            // [Control.HEAVY_ATTACK]: 'Numpad3',
+
+            [Control.UP]: 'KeyW',
+            [Control.DOWN]: 'KeyS',
+            [Control.LEFT]: 'KeyA',
+            [Control.RIGHT]: 'KeyD',
+            [Control.LIGHT_ATTACK]: 'KeyU',
+            [Control.MEDIUM_ATTACK]: 'KeyI',
+            [Control.HEAVY_ATTACK]: 'KeyO',
         }
     },
 ];
