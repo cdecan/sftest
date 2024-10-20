@@ -136,4 +136,14 @@ export class Fireball {
         );
         context.setTransform(1,0,0,1,0,0);
     }
+
+    // serialize(){
+    //     return {
+    //         type: 'HeavyHitSplash',
+    //         fighter: {
+    //             direction: this.fighter.direction,
+    //             playerId: this.playerId,
+    //         }
+    //     }
+    // }
 }

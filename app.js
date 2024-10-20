@@ -19,6 +19,7 @@ app.get('/', (req, res) => {
 
 const players = {}
 const playerQueue = []
+const battles = []
 
 io.on('connection', (socket) => {
     console.log("a user connected")
@@ -68,6 +69,8 @@ io.on('connection', (socket) => {
         fighterSceneData: {
             fighterDrawOrder: [0,1],
             hurtTimer: undefined,
+            entityList: [],
+            needEntityUpdate: false,
         }
     }
 
@@ -115,6 +118,7 @@ io.on('connection', (socket) => {
             //console.log(playerQueue.length)
             playerQueue[0].playerId = 0;
             playerQueue[1].playerId = 1;
+            battles.push([playerQueue[0], playerQueue[1]])
             io.emit('makeMatch', playerQueue);
         }
         
@@ -148,6 +152,19 @@ io.on('connection', (socket) => {
 
     socket.on('dealDamage', (damage) => {
         players[socket.id].hitPoints -= damage;
+    })
+
+    socket.on('entitiesChanged', (entities) => {
+        for(var item of battles[0]){
+            item.fighterSceneData.entityList = entities;
+            item.fighterSceneData.needEntityUpdate = true;
+        }
+    })
+
+    socket.on('entitiesSet', () => {
+        for(var item of battles[0]){
+            item.fighterSceneData.needEntityUpdate = false;
+        }
     })
 
 })

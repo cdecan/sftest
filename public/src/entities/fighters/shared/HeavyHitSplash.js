@@ -24,4 +24,11 @@ export class HeavyHitSplash extends HitSplash{
     draw(context, camera){
         super.draw(context, camera);
     }
+    serialize(){
+        return {
+            type: 'HeavyHitSplash',
+            position: this.position,
+            playerId: this.playerId,
+        }
+    }
 }

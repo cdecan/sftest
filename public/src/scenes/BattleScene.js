@@ -156,6 +156,7 @@ export class BattleScene{
         // fighter.frames = JSON.parse(frontendPlayers[fighter.mySocketId].fighterData.frames, reviver);
         // fighter.animations = frontendPlayers[fighter.mySocketId].fighterData.animations;
         fighter.gravity = frontendPlayers[fighter.mySocketId].fighterData.gravity;
+        //this.entities.entities = JSON.parse(frontendPlayers[fighter.mySocketId].fighterSceneData.entityList);
 
     }
 
@@ -179,7 +180,7 @@ export class BattleScene{
                 // animations: fighter.animations,
                 gravity: fighter.gravity,
                 hurtTimer: this.hurtTimer,
-                fighterDrawOrder: this.fighterDrawOrder
+                fighterDrawOrder: this.fighterDrawOrder,
             }
             //console.log(data.frames);
             socket.emit("sendPlayerData", data)

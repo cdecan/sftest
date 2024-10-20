@@ -11,7 +11,6 @@ export class HitSplash {
         this.position = {x, y};
         this.playerId = playerId;
         this.entityList = entityList;
-
         this.animationTimer = time.previous;
     }
 

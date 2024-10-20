@@ -24,4 +24,11 @@ export class LighHitSplash extends HitSplash{
     draw(context, camera){
         super.draw(context, camera);
     }
+    serialize(){
+        return {
+            type: 'LightHitSplash',
+            position: this.position,
+            playerId: this.playerId,
+        }
+    }
 }

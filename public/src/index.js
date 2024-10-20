@@ -21,6 +21,7 @@ socket.on('updatePlayers', (backendPlayers) => {
                 score: backendPlayer.score,
                 name: backendPlayer.name,
                 fighterData: backendPlayer.fighterData,
+                fighterSceneData: backendPlayer.fighterSceneData,
                 hitPoints: backendPlayer.hitPoints
             }
         } else {
@@ -30,6 +31,7 @@ socket.on('updatePlayers', (backendPlayers) => {
             frontendPlayers[id].name = backendPlayer.name;
             frontendPlayers[id].score = backendPlayer.score;
             frontendPlayers[id].fighterData = backendPlayer.fighterData;
+            frontendPlayers[id].fighterSceneData = backendPlayer.fighterSceneData;
             frontendPlayers[id].hitPoints = backendPlayer.hitPoints;
         }
     }

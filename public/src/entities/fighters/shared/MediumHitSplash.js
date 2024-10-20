@@ -24,4 +24,11 @@ export class MediumHitSplash extends HitSplash{
     draw(context, camera){
         super.draw(context, camera);
     }
+    serialize(){
+        return {
+            type: 'MediumHitSplash',
+            position: this.position,
+            playerId: this.playerId,
+        }
+    }
 }
