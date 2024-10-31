@@ -20,12 +20,20 @@ app.get('/', (req, res) => {
 const players = {}
 const playerQueue = []
 const battles = []
+const highScoreList = [
+    {name: "AAA", score: 0},
+    {name: "BBB", score: 0},
+    {name: "CCC", score: 0},
+    {name: "DDD", score: 0},
+    {name: "EEE", score: 0}
+]
 
 io.on('connection', (socket) => {
     console.log("a user connected")
     players[socket.id] = {
         hitPoints: HEALTH_MAX_HP,
         socketId: socket.id,
+        opponentSocketId: undefined,
         playerId: -1,
         fighter: undefined,
         score: 0,
@@ -63,7 +71,8 @@ io.on('connection', (socket) => {
             frames: {},
             animations: {},
             gravity: 0,
-
+            fireballFired: false,
+            opponentFireballFired: false,
 
         },
         fighterSceneData: {
@@ -81,6 +90,12 @@ io.on('connection', (socket) => {
     socket.on('disconnect', (reason) =>{
         console.log("a user disconnected")
         console.log(reason)
+        //update high score
+        // for(tuple of this.highScoreList){
+        //     if()
+        // }
+
+
         if(playerQueue.includes(players[socket.id])){
             const index = playerQueue.indexOf(players[socket.id]);
             playerQueue.splice(index, 1);
@@ -117,7 +132,9 @@ io.on('connection', (socket) => {
         if(playerQueue.length > 1){
             //console.log(playerQueue.length)
             playerQueue[0].playerId = 0;
+            playerQueue[0].opponentSocketId = playerQueue[1].socketId;
             playerQueue[1].playerId = 1;
+            playerQueue[1].opponentSocketId = playerQueue[0].socketId;
             battles.push([playerQueue[0], playerQueue[1]])
             io.emit('makeMatch', playerQueue);
         }
@@ -165,6 +182,18 @@ io.on('connection', (socket) => {
         for(var item of battles[0]){
             item.fighterSceneData.needEntityUpdate = false;
         }
+    })
+
+    socket.on('setFireballFired', (value) => {
+        players[socket.id].fighterData.fireballFired = value;
+    })
+
+    socket.on('signalNewFireball', () => {
+        players[players[socket.id].opponentSocketId].fighterData.opponentFireballFired = true;
+    })
+
+    socket.on('fireballRecieved', () => {
+        players[socket.id].fighterData.opponentFireballFired = false;
     })
 
 })

@@ -94,9 +94,9 @@ export class StatusBar {
         ['score-Z', [136, 125, 10, 10]],
     ]);
     
-    constructor(){
+    constructor(names){
         this.image = document.querySelector('img[alt="misc"]');
-        this.names = gameState.fighters.map(({id}) => `tag-${id.toLowerCase()}`);
+        this.names = names//gameState.fighters.map(({id}) => `tag-${id.toLowerCase()}`);
     }
 
     drawFrame(context, frameKey, x, y, direction=1){
@@ -125,8 +125,16 @@ export class StatusBar {
     drawNameTags(context){
         const [name1, name2] = this.names;
 
-        this.drawFrame(context, name1, 32, 33);
-        this.drawFrame(context, name2, 322, 33);
+        //this.drawFrame(context, name1, 32, 33);
+        //this.drawFrame(context, name2, 322, 33);
+        this.drawLabel(context, name1, 32)
+        this.drawLabel(context, name2, 320)
+    }
+
+    drawLabel(context, label, x, y=33) {
+        for(const index in label) {
+            this.drawFrame(context, `score-${label.charAt(index)}`, x + index*12, y)
+        }
     }
 
     drawTime(context){

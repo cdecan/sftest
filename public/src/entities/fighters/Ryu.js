@@ -1,5 +1,6 @@
 import { FighterState, FrameDelay, HurtBox, PushBox, FIGHTER_HURT_DELAY, SpecialMoveDirection, SpecialMoveButton, FighterAttackType, FighterAttackStrength, specialStateValidFrom } from '../../constants/fighter.js';
 import { playSound } from '../../engine/soundHandler.js';
+import { frontendPlayers, socket } from '../../index.js';
 import { Fighter } from './Fighter.js';
 import { Fireball } from './special/Fireball.js';
 
@@ -399,9 +400,19 @@ export class Ryu extends Fighter{
         this.fireballFired = false;
     }
     handleHadoukenState(time){
+        // if(!this.fireballFired && this.animationFrame === 3){
+        //     this.fireballFired = true;
+        //     this.entityList.add.call(this.entityList, Fireball, time, this);
+        // }
+
+        // if(!frontendPlayers[socket.id].fighterData.fireballFired && this.animationFrame === 3){
+        //     socket.emit('setFireballFired', true);
+        // }
+
         if(!this.fireballFired && this.animationFrame === 3){
+            socket.emit('setFireballFired', true);
+            socket.emit('signalNewFireball');
             this.fireballFired = true;
-            this.entityList.add.call(this.entityList, Fireball, time, this);
         }
 
         if(!this.isAnimationCompleted()) return;

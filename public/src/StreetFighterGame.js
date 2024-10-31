@@ -47,11 +47,11 @@ export class StreetFighterGame {
         window.requestAnimationFrame(this.frame.bind(this));
     }
 
-    changeScene(scene, winningID=0, fighters=[], player=undefined){
+    changeScene(scene, winningID=0, fighters=[], player=undefined, names=["RYU", "RYU"]){
         switch (scene) {
             case SceneTypes.FIGHTING_GAME:
                 //this.resetFighters(fighters, winningID);
-                this.scene = new BattleScene(this, fighters);
+                this.scene = new BattleScene(this, fighters, names);
                 break;
             case SceneTypes.MOVE_SELECT:
                 this.scene = new MoveSelectScene(fighters, winningID, this);
@@ -63,7 +63,6 @@ export class StreetFighterGame {
     }
 
     resetFighters(fighters, winningID){
-        console.log(fighters);
         gameState.fighters[fighters[0].playerId] = {
             battles: gameState.fighters[fighters[0].playerId].battles + 1,
             hitPoints: HEALTH_MAX_HP,

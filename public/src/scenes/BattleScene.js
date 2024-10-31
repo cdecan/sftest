@@ -22,7 +22,7 @@ export class BattleScene{
     hurtTimer = undefined;
     
     
-    constructor(SFGame, fighterData=[]){
+    constructor(SFGame, fighterData=[], names=["RYU", "RYU"]){
         this.fighterData = fighterData;
         this.SFGame = SFGame;
         this.stage = new KenStage();
@@ -31,7 +31,7 @@ export class BattleScene{
         this.startRound();
 
         this.overlays = [
-            new StatusBar(this.fighters),
+            new StatusBar(names),
         ];
     }
 
@@ -52,6 +52,9 @@ export class BattleScene{
     
 
     handleAttackHit(time, playerId, opponentId, position, strength) {
+        // console.log("ouch");
+        // console.log(playerId)
+        // console.log(opponentId)
         gameState.fighters[opponentId].hitPoints -= FighterAttackBaseData[strength].damage;
         socket.emit('dealDamage', FighterAttackBaseData[strength].damage);
         
@@ -175,12 +178,10 @@ export class BattleScene{
                 slideVelocity: fighter.slideVelocity,
                 slideFriction: fighter.slideFriction,
                 boxes: fighter.boxes,
-                //states: this.states,
-                // frames: JSON.stringify(fighter.frames, replacer),
-                // animations: fighter.animations,
                 gravity: fighter.gravity,
                 hurtTimer: this.hurtTimer,
                 fighterDrawOrder: this.fighterDrawOrder,
+                fireballFired: fighter.fireballFired,
             }
             //console.log(data.frames);
             socket.emit("sendPlayerData", data)

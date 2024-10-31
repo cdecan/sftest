@@ -31,7 +31,7 @@ export class Fireball {
     state = FireballState.ACTIVE;
 
     constructor(args, time, entityList) {
-        const [fighter] = args;
+        const [fighter, aesthetic] = args;
         this.fighter = fighter;
         this.entityList = entityList;
         this.direction = this.fighter.direction;
@@ -41,6 +41,7 @@ export class Fireball {
             y: this.fighter.position.y - 57
         };
         this.animationTimer = time.previous;
+        this.isAesthetic = aesthetic
     }
 
     hasCollidedWithOpponent(actualHitBox) {
@@ -96,6 +97,7 @@ export class Fireball {
         
         if(hasCollided !== FireballCollidedState.OPPONENT) return;
 
+        if(this.isAesthetic) return;
         this.fighter.opponent.handleAttackHit(FighterAttackStrength.HEAVY, FighterAttackType.STAND, undefined, FighterHurtBox.BODY, FighterHurtBy.FIREBALL, time);
     }
 
@@ -137,13 +139,9 @@ export class Fireball {
         context.setTransform(1,0,0,1,0,0);
     }
 
-    // serialize(){
-    //     return {
-    //         type: 'HeavyHitSplash',
-    //         fighter: {
-    //             direction: this.fighter.direction,
-    //             playerId: this.playerId,
-    //         }
-    //     }
-    // }
+    serialize(){
+        return {
+            type: 'Fireball'
+        }
+    }
 }

@@ -2,6 +2,7 @@ import { FighterState } from "../../constants/fighter.js";
 import { frontendPlayers, socket } from "../../index.js";
 import { DEBUG_drawDebug } from "../../utils/fighterDebug.js";
 import { ChunLi, Ryu } from "./index.js";
+import { Fireball } from "./special/Fireball.js";
 
 export class Player extends Ryu{
 
@@ -96,5 +97,30 @@ export class Player extends Ryu{
         context.setTransform(1,0,0,1,0,0);
 
         DEBUG_drawDebug(this, context, camera);
+    }
+
+    update(time, context, camera){
+        this.updateSpecialMoves(time);
+        this.updatePosition(time);
+        this.states[this.currentState].update(time);
+        this.updateSlide(time);
+        this.updateAnimation(time);
+        this.updateStageConstraints(time, context, camera);
+        this.updateAttackBoxCollided(time);
+        if(this.winStart) this.updateWin(time);
+
+        if(frontendPlayers[socket.id].fighterData.fireballFired){
+            socket.emit('setFireballFired', false);
+            this.entityList.add.call(this.entityList, Fireball, time, this);
+        }
+
+
+        if(frontendPlayers[socket.id].fighterData.opponentFireballFired){
+            socket.emit('fireballRecieved')
+            this.entityList.add.call(this.entityList, Fireball, time, this.opponent, true);
+        }
+
+        //if(frontendPlayers[socket.id].fighterData.fireballFlag) socket.emit('fireballFlag', false);
+
     }
 }

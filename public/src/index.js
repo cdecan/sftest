@@ -16,6 +16,7 @@ socket.on('updatePlayers', (backendPlayers) => {
         if(!frontendPlayers[id]) {
             frontendPlayers[id] = {
                 socketId: backendPlayer.socketId,
+                opponentSocketId: backendPlayer.opponentSocketId,
                 playerId: backendPlayer.playerId,
                 fighter: backendPlayer.fighter,
                 score: backendPlayer.score,
@@ -28,6 +29,7 @@ socket.on('updatePlayers', (backendPlayers) => {
             //if player already exists
             frontendPlayers[id].fighter = backendPlayer.fighter;
             frontendPlayers[id].playerId = backendPlayer.playerId;
+            frontendPlayers[id].opponentSocketId = backendPlayer.opponentSocketId,
             frontendPlayers[id].name = backendPlayer.name;
             frontendPlayers[id].score = backendPlayer.score;
             frontendPlayers[id].fighterData = backendPlayer.fighterData;
@@ -42,12 +44,11 @@ socket.on('updatePlayers', (backendPlayers) => {
         }
     }
 
-    //console.log(frontendPlayers)
 })
 
 socket.on('makeMatch', (playerQueue) => {
     var fighters = [playerQueue[0], playerQueue[1]]
-    SFGame.changeScene(SceneTypes.FIGHTING_GAME, 0, fighters)
+    SFGame.changeScene(SceneTypes.FIGHTING_GAME, 0, fighters, undefined, [playerQueue[0].name, playerQueue[1].name])
 })
 
 window.addEventListener('load', function() {
