@@ -48,6 +48,7 @@ export class StreetFighterGame {
     }
 
     changeScene(scene, winningID=0, fighters=[], player=undefined, names=["RYU", "RYU"]){
+        delete this.scene;
         switch (scene) {
             case SceneTypes.FIGHTING_GAME:
                 //this.resetFighters(fighters, winningID);

@@ -123,13 +123,11 @@ io.on('connection', (socket) => {
     })
 
     socket.on('matchmake', () => {
-        //console.log(playerQueue[0])
         if(!playerQueue.includes(players[socket.id])){
             playerQueue.push(players[socket.id])
-            console.log("Player Queue:")
-            console.log(playerQueue);
-        }
-        if(playerQueue.length > 1){
+            console.log("Player Added to Queue")
+        }else if(playerQueue.length > 1){
+            if(socket.id != playerQueue[0].socketId && socket.id != playerQueue[1].socketId) return;
             //console.log(playerQueue.length)
             playerQueue[0].playerId = 0;
             playerQueue[0].opponentSocketId = playerQueue[1].socketId;
@@ -137,8 +135,13 @@ io.on('connection', (socket) => {
             playerQueue[1].opponentSocketId = playerQueue[0].socketId;
             battles.push([playerQueue[0], playerQueue[1]])
             io.emit('makeMatch', playerQueue);
+            playerQueue.splice(0, 1);
+            playerQueue.splice(0, 1);
+            console.log("Players Removed From Queue")
         }
-        
+        console.log("Player Queue:")
+        let attrs = playerQueue.map(a => a.socketId)
+        console.log(attrs);
     })
 
     socket.on('changeState', (newState, id) => {
@@ -168,7 +171,7 @@ io.on('connection', (socket) => {
     })
 
     socket.on('dealDamage', (damage) => {
-        players[socket.id].hitPoints -= damage;
+        players[players[socket.id].opponentSocketId].hitPoints -= damage;
     })
 
     socket.on('entitiesChanged', (entities) => {
@@ -208,9 +211,9 @@ server.listen(port, () => {
 
 function printPlayers(){
     console.log("PLAYERS:")
+    console.log()
     for(var i in players){
-        console.log(i + ":")
-        console.log(players[i].name)
-        console.log()
+        console.log(i + " : " + players[i].name)
     }
+    console.log()
 }

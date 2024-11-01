@@ -687,15 +687,16 @@ export class Fighter {
 
     handleAttackHit(attackStrength, attackType, hitPosition, hitLocation, hurtBy, time){
 
+        
         if(attackStrength === FighterAttackStrength.LAUNCHER){
             this.velocity.y = FighterAttackBaseData[attackStrength].launch;
             attackStrength = FighterAttackStrength.LIGHT;
         }
-
+        
         if(attackType === FighterAttackType.COMBO){
             attackType = FighterAttackType.STAND;
         }
-
+        
         const {velocity, friction} = FighterAttackBaseData[attackStrength].slide;
         
         this.hurtBy = hurtBy;
@@ -806,7 +807,7 @@ export class Fighter {
     }
 
     updateAttackBoxCollided(time){
-
+        
         if(this.hasHit) return;
 
         const attackType = this.states[this.currentState].attackType
@@ -822,7 +823,7 @@ export class Fighter {
                 { x, y, width, height},
             );
             if(!boxOverlap(actualHitBox, actualOpponentHurtBox)) continue;
-
+            
             const attackStrength = this.states[this.currentState].attackStrength;
 
             stopSound(this.soundHits[attackStrength]);            
@@ -884,7 +885,7 @@ export class Fighter {
         this.updateAnimation(time);
         this.updateStageConstraints(time, context, camera);
         this.updateAttackBoxCollided(time);
-        if(this.winStart) this.updateWin(time);
+        //if(this.winStart) this.updateWin(time);
     }
 
     draw(context, camera){

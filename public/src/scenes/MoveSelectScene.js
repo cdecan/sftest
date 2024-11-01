@@ -91,7 +91,6 @@ export class MoveSelectScene {
         if (control.isAnyAttack(this.winnerID)){
             //this.fighters[this.winnerID].changeSpecial(this.getSpecialNumber(this.specials[this.selected]), this.specials[this.selected], this.specialCharacters[this.selected])
             
-            
             this.SFGame.changeScene(SceneTypes.FIGHTING_GAME, this.winnerID, this.fighters);
         } else if (control.isControlPressed(this.winnerID, Control.LEFT)){
             this.selected = Math.max(0, this.selected - 1);

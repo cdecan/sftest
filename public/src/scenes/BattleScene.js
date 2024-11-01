@@ -52,16 +52,12 @@ export class BattleScene{
     
 
     handleAttackHit(time, playerId, opponentId, position, strength) {
-        // console.log("ouch");
-        // console.log(playerId)
-        // console.log(opponentId)
-        gameState.fighters[opponentId].hitPoints -= FighterAttackBaseData[strength].damage;
-        socket.emit('dealDamage', FighterAttackBaseData[strength].damage);
-        
+
         this.hurtTimer = time.previous + (FIGHTER_HURT_DELAY * FRAME_TIME);
         this.fighterDrawOrder = [opponentId, playerId];
         //socket.emit('sendDrawOrder', this.fighterDrawOrder)
-        
+        gameState.fighters[playerId].hitPoints -= FighterAttackBaseData[strength].damage;
+        socket.emit('dealDamage', FighterAttackBaseData[strength].damage);
         if(!position) return;
 
         this.entities.add(this.getHitSplashClass(strength), time, position.x, position.y, playerId);
@@ -131,7 +127,10 @@ export class BattleScene{
                 if(fighter.mySocketId == socket.id){
                     fighter.update(time, context, this.camera);
                     this.sendToBackend(fighter)
+                }else{
+                    fighter.updateAttackBoxCollided(time, context, this.camera);
                 }
+                if(fighter.winStart) fighter.updateWin(time);
             }
         }
         for (const fighter of this.fighters) {
@@ -211,6 +210,7 @@ export class BattleScene{
             }
         }
 
+        
         for(const index in this.overlays[0].healthBars){
             if(this.overlays[0].healthBars[index].hitPoints === 0){
                 const winner = this.getOppositeIndex(index);
@@ -218,8 +218,12 @@ export class BattleScene{
                 if(this.fighters[winner].winStop){
                     this.fighters[winner].winStart = false;
                     this.fighters[winner].winStop = false;
-                    this.SFGame.changeScene(SceneTypes.MOVE_SELECT, winner, this.fighters);
-                }
+                    if(this.fighters[winner].mySocketId == socket.id){
+                        this.SFGame.changeScene(SceneTypes.MOVE_SELECT, winner, this.fighters);
+                    }else {
+                        this.SFGame.changeScene(SceneTypes.MATCHMAKER)
+                    }
+                } 
             }
         }
     }
