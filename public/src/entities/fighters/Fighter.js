@@ -686,7 +686,6 @@ export class Fighter {
     }
 
     handleAttackHit(attackStrength, attackType, hitPosition, hitLocation, hurtBy, time){
-
         
         if(attackStrength === FighterAttackStrength.LAUNCHER){
             this.velocity.y = FighterAttackBaseData[attackStrength].launch;

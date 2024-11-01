@@ -56,7 +56,7 @@ export class BattleScene{
         this.hurtTimer = time.previous + (FIGHTER_HURT_DELAY * FRAME_TIME);
         this.fighterDrawOrder = [opponentId, playerId];
         //socket.emit('sendDrawOrder', this.fighterDrawOrder)
-        gameState.fighters[playerId].hitPoints -= FighterAttackBaseData[strength].damage;
+        //gameState.fighters[playerId].hitPoints -= FighterAttackBaseData[strength].damage;
         socket.emit('dealDamage', FighterAttackBaseData[strength].damage);
         if(!position) return;
 

@@ -110,13 +110,13 @@ export class Player extends Ryu{
         
         if(frontendPlayers[socket.id].fighterData.fireballFired){
             socket.emit('setFireballFired', false);
-            this.entityList.add.call(this.entityList, Fireball, time, this);
+            this.entityList.add.call(this.entityList, Fireball, time, this, true);
         }
         
         
         if(frontendPlayers[socket.id].fighterData.opponentFireballFired){
             socket.emit('fireballRecieved')
-            this.entityList.add.call(this.entityList, Fireball, time, this.opponent, true);
+            this.entityList.add.call(this.entityList, Fireball, time, this.opponent);
         }
         
         //if(frontendPlayers[socket.id].fighterData.fireballFlag) socket.emit('fireballFlag', false);
