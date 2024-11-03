@@ -47,6 +47,7 @@ socket.on('updatePlayers', (backendPlayers) => {
 })
 
 socket.on('makeMatch', (playerQueue) => {
+    //if(!(socket.id == playerQueue[0].socketId || socket.id == playerQueue[1].socketId)) return;
     var fighters = [playerQueue[0], playerQueue[1]]
     SFGame.changeScene(SceneTypes.FIGHTING_GAME, 0, fighters, undefined, [playerQueue[0].name, playerQueue[1].name])
 })

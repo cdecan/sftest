@@ -38,6 +38,7 @@ io.on('connection', (socket) => {
         fighter: undefined,
         score: 0,
         name: "AAA",
+        inQueue: false,
         fighterData: {
             position: {
                 x: 0,
@@ -123,21 +124,11 @@ io.on('connection', (socket) => {
     })
 
     socket.on('matchmake', () => {
+        if(players[socket.id].inQueue) return;
         if(!playerQueue.includes(players[socket.id])){
             playerQueue.push(players[socket.id])
+            players[socket.id].inQueue = true;
             console.log("Player Added to Queue")
-        }else if(playerQueue.length > 1){
-            if(socket.id != playerQueue[0].socketId && socket.id != playerQueue[1].socketId) return;
-            //console.log(playerQueue.length)
-            playerQueue[0].playerId = 0;
-            playerQueue[0].opponentSocketId = playerQueue[1].socketId;
-            playerQueue[1].playerId = 1;
-            playerQueue[1].opponentSocketId = playerQueue[0].socketId;
-            battles.push([playerQueue[0], playerQueue[1]])
-            io.emit('makeMatch', playerQueue);
-            playerQueue.splice(0, 1);
-            playerQueue.splice(0, 1);
-            console.log("Players Removed From Queue")
         }
         console.log("Player Queue:")
         let attrs = playerQueue.map(a => a.socketId)
@@ -203,6 +194,22 @@ io.on('connection', (socket) => {
 
 setInterval(() =>{
     io.emit('updatePlayers', players)
+
+    if(playerQueue.length > 1){
+        playerQueue[0].playerId = 0;
+        playerQueue[0].opponentSocketId = playerQueue[1].socketId;
+        playerQueue[1].playerId = 1;
+        playerQueue[1].opponentSocketId = playerQueue[0].socketId;
+        io.to(playerQueue[0].socketId).emit('makeMatch', playerQueue);
+        io.to(playerQueue[1].socketId).emit('makeMatch', playerQueue);
+        battles.push([playerQueue[0], playerQueue[1]])
+        let player1 = playerQueue.splice(0, 1);
+        let player2 = playerQueue.splice(0, 1);
+        player1.inQueue = false;
+        player2.inQueue = false;
+        console.log("Players Removed From Queue")
+    }
+
 }, 15)
 
 server.listen(port, () => {
