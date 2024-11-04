@@ -27,6 +27,7 @@ export class Player extends Ryu{
 
         if(!this.images[specialMoveChar.image.alt]){
             this.images[specialMoveChar.image.alt] = specialMoveChar.image;
+            //this.opponent.images[specialMoveChar.image.alt] = specialMoveChar.image;
         }
 
 
@@ -62,7 +63,9 @@ export class Player extends Ryu{
             return;
         }
 
-        this.currentImage = this.images['ryu'];
+        //this.currentImage = this.images['ryu'];
+        socket.emit('setCurrentImage', 'ryu', this.mySocketId);
+        
         this.hasHit = false;
 
 

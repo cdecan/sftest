@@ -5,6 +5,7 @@ import { SceneTypes } from "../constants/scenes.js";
 import { Control } from "../constants/control.js";
 import { Ryu, Cammy, ChunLi } from "../entities/fighters/index.js";
 import { FighterState } from "../constants/fighter.js";
+import { frontendPlayers, socket } from "../index.js";
 
 export class MoveSelectScene {
     fighters = [];
@@ -67,12 +68,14 @@ export class MoveSelectScene {
         this.SFGame = SFGame;
 
         this.specialCharacters = [];
+        this.specialCharacterNames = [];
         this.specials = [];
 
         for(var i = 0; i < 3; i++){
             var randomFighter = this.randomProperty(this.potentialSpecials);
             var randomSpecial = this.potentialSpecials[randomFighter][Math.floor(Math.random()*this.potentialSpecials[randomFighter].length)];
             this.specialCharacters.push(this.getFighterEntity(randomFighter));
+            this.specialCharacterNames.push(randomFighter);
             this.specials.push(randomSpecial);
         }
 
@@ -90,8 +93,10 @@ export class MoveSelectScene {
     update(time, context){
         if (control.isAnyAttack(this.winnerID)){
             //this.fighters[this.winnerID].changeSpecial(this.getSpecialNumber(this.specials[this.selected]), this.specials[this.selected], this.specialCharacters[this.selected])
-            
-            this.SFGame.changeScene(SceneTypes.FIGHTING_GAME, this.winnerID, this.fighters);
+            frontendPlayers[socket.id].fighter[this.specials[this.selected]] = this.specialCharacterNames[this.selected];
+            socket.emit('playerinit', frontendPlayers[socket.id].fighter);
+            //this.SFGame.changeScene(SceneTypes.FIGHTING_GAME, this.winnerID, this.fighters);
+            this.SFGame.changeScene(SceneTypes.MATCHMAKER)
         } else if (control.isControlPressed(this.winnerID, Control.LEFT)){
             this.selected = Math.max(0, this.selected - 1);
         } else if (control.isControlPressed(this.winnerID, Control.RIGHT)){

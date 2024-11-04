@@ -69,6 +69,7 @@ export class BattleScene{
     }
 
     startRound(){
+        socket.emit('resetHp');
         this.fighters = this.getFighterEntities();
         if(this.fighterData.length != 0){
             this.setFighterSpecials(this.fighters[0], this.fighterData[0].fighter)
@@ -132,6 +133,8 @@ export class BattleScene{
                 }
                 if(fighter.winStart) fighter.updateWin(time);
                 fighter.states[fighter.currentState].update(time);
+                fighter.updateAnimation(time);
+                fighter.currentImage = fighter.images[frontendPlayers[fighter.mySocketId].fighterData.currentImage]
             }
         }
         for (const fighter of this.fighters) {

@@ -59,6 +59,7 @@ io.on('connection', (socket) => {
             hurtShakeTimer: 0,
             slideVelocity: 0,
             slideFriction: 0,
+            currentImage: 'ryu',
             boxes: {
                 push: {x:0,y:0,width:0,height:0},
                 hit: {x:0,y:0,width:0,height:0},
@@ -121,6 +122,10 @@ io.on('connection', (socket) => {
         players[socket.id].fighter = newPlayer
         players[socket.id].hitPoints = HEALTH_MAX_HP
 
+    })
+
+    socket.on('resetHp', () => {
+        players[socket.id].hitPoints = HEALTH_MAX_HP
     })
 
     socket.on('matchmake', () => {
@@ -190,6 +195,11 @@ io.on('connection', (socket) => {
         players[socket.id].fighterData.opponentFireballFired = false;
     })
 
+    socket.on('setCurrentImage', (image, socketId) => {
+        players[socketId].fighterData.currentImage = image;
+    })
+
+
 })
 
 setInterval(() =>{
@@ -203,8 +213,10 @@ setInterval(() =>{
         io.to(playerQueue[0].socketId).emit('makeMatch', playerQueue);
         io.to(playerQueue[1].socketId).emit('makeMatch', playerQueue);
         battles.push([playerQueue[0], playerQueue[1]])
-        let player1 = playerQueue.splice(0, 1);
-        let player2 = playerQueue.splice(0, 1);
+        let player1 = playerQueue[0];
+        let player2 = playerQueue[1];
+        playerQueue.splice(0, 1);
+        playerQueue.splice(0, 1);
         player1.inQueue = false;
         player2.inQueue = false;
         console.log("Players Removed From Queue")

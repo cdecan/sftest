@@ -1,6 +1,7 @@
 import { FighterAttackStrength, FighterAttackType, FighterState, FrameDelay, HurtBox, PushBox, specialStateValidFrom } from "../../constants/fighter.js";
 import { STAGE_FLOOR } from "../../constants/stage.js";
 import { Fighter } from "./Fighter.js";
+import { socket } from "../../index.js";
 
 export class ChunLi extends Fighter{
     image = document.querySelector('img[alt=chunli]');
@@ -155,7 +156,8 @@ export class ChunLi extends Fighter{
     }
 
     handleRapidKicksInit(_, __){
-        this.currentImage = this.images['chunli'];
+        //this.currentImage = this.images['chunli'];
+        socket.emit('setCurrentImage', 'chunli', this.mySocketId);
         this.resetVelocities();
     }
 
@@ -165,7 +167,8 @@ export class ChunLi extends Fighter{
     }
 
     handleFlipKickInit(_, __){
-        this.currentImage = this.images['chunli'];
+        //this.currentImage = this.images['chunli'];
+        socket.emit('setCurrentImage', 'chunli', this.mySocketId);
         this.resetVelocities();
     }
 
@@ -180,7 +183,8 @@ export class ChunLi extends Fighter{
     }
 
     handleUpKicksInit(_, __){
-        this.currentImage = this.images['chunli'];
+        //this.currentImage = this.images['chunli'];
+        socket.emit('setCurrentImage', 'chunli', this.mySocketId);
         this.resetVelocities();
         this.velocity.y = this.initialVelocity.jump + 100;
     }

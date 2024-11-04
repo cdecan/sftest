@@ -1,5 +1,6 @@
 import { FighterAttackStrength, FighterAttackType, FighterState, FrameDelay, HurtBox, PushBox, specialStateValidFrom } from "../../constants/fighter.js";
 import { Fighter } from "./Fighter.js";
+import { socket } from "../../index.js";
 
 export class Cammy extends Fighter{
     //memo:
@@ -48,7 +49,8 @@ export class Cammy extends Fighter{
 
 
     handleCannonDrillInit(_, __){
-        this.currentImage = this.images['cammy'];
+        //this.currentImage = this.images['cammy'];
+        socket.emit('setCurrentImage', 'cammy', this.mySocketId);
         this.resetVelocities();
     }
 
