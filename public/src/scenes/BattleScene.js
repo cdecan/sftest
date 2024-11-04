@@ -131,6 +131,7 @@ export class BattleScene{
                     fighter.updateAttackBoxCollided(time, context, this.camera);
                 }
                 if(fighter.winStart) fighter.updateWin(time);
+                fighter.states[fighter.currentState].update(time);
             }
         }
         for (const fighter of this.fighters) {
@@ -236,7 +237,6 @@ export class BattleScene{
         this.updateOverlays(time, context);
         this.camera.update(time, context);
         this.updateGameOver(time);
-
     }
 
     drawFighters(context){
